@@ -44,6 +44,7 @@ class Controller(udi_interface.Node):
         polyglot.subscribe(polyglot.STOP, self.stop)
         polyglot.subscribe(polyglot.START, self.start, address)
         polyglot.subscribe(polyglot.ADDNODEDONE, self.node_queue)
+        polyglot.subscribe(polyglot.POLL, self.poll)
 
         # start processing events and create add our controller node
         polyglot.ready()
@@ -144,6 +145,28 @@ class Controller(udi_interface.Node):
         LOGGER.debug(self.sp_nodes)
         
         self.setDriver('GV0', 2, True, True)
+
+
+    def poll(self, polltype):
+        nodes = self.poly.getNodes()
+
+        if 'shortPoll' in polltype:
+            samples = rest.post("samples", {
+                "limit": self.sample_num
+            }).json()
+
+            sensors = samples['sensors']
+
+            for sample in sensors:
+
+                if sample not in self.sp_nodes:
+                    #Add node
+                    LOGGER.info(f'{sample} node not found... Creating!')
+                    continue
+                else:
+                    sensor_ = sensors[sample]
+                    address = self.sp_nodes[sample]
+                    nodes[address].setDriver('GV0', int(sensor_[0]['temperature']), True, True)
 
 
     '''
