@@ -124,7 +124,7 @@ class Controller(udi_interface.Node):
                 self.poly.addNode(node)
                 self.wait_for_node_done()
             except Exception as e:
-                LOGGER.error("Couldn't create sensor")
+                LOGGER.error("Couldn't create sensor: {}".format(e))
 
     def createChildren(self, how_many):
         # delete any existing nodes
