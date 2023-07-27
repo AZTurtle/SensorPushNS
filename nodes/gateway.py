@@ -9,6 +9,7 @@ import udi_interface
 import sys
 import time
 from nodes import sensor
+import rest
 
 LOGGER = udi_interface.LOGGER
 Custom = udi_interface.Custom
@@ -33,7 +34,11 @@ class Controller(udi_interface.Node):
         self.count = 0
         self.n_queue = []
 
+        self.Parameters = Custom(polyglot, 'customparams')
+
         # subscribe to the events we want
+        
+        polyglot.subscribe(polyglot.CUSTOMPARAMS, self.parameterHandler)
         polyglot.subscribe(polyglot.STOP, self.stop)
         polyglot.subscribe(polyglot.START, self.start, address)
         polyglot.subscribe(polyglot.ADDNODEDONE, self.node_queue)
@@ -41,6 +46,24 @@ class Controller(udi_interface.Node):
         # start processing events and create add our controller node
         polyglot.ready()
         self.poly.addNode(self)
+
+    def parameterHandler(self, params):
+        self.Parameters.load(params)
+
+        if 'E-Mail' in params and 'Password' in params:
+
+            email = params['E-Mail']
+            password = params['Password']
+
+            rest.authorize(email, password)
+
+            if rest.auth_token is None:
+                self.poly.Notices['nodes'] = 'Invalid username and/or password'
+            else:
+                self.poly.Notices.clear()
+                LOGGER.debug(rest.auth_token)
+        else:
+            self.poly.Notices['nodes'] = 'Please provide an E-Mail and Password'
 
     '''
     node_queue() and wait_for_node_event() create a simple way to wait
