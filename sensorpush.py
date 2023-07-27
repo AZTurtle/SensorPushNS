@@ -22,7 +22,7 @@ if __name__ == "__main__":
         rest.authorize("hunterbennett@hunterbennett.com", "gHfsensor123")
         LOGGER.debug(rest.auth_token)
 
-        gateway.Controller(polyglot, 'controller', 'controller', 'Gateway')
+        gateway.Controller(polyglot, 'controller', 'controller', 'Counter')
 
         # Just sit and wait for events
         polyglot.runForever()
