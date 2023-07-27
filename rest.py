@@ -32,4 +32,4 @@ def get(url):
     return requests.post(SP_API_URL + url, headers={
         'accept': 'application/json',
         'Authorization': auth_token
-    })
+    }, data={})
