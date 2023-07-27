@@ -151,8 +151,8 @@ class Controller(udi_interface.Node):
         nodes = self.poly.getNodes()
 
         if 'shortPoll' in polltype:
-            samples = rest.post("samples", {
-                "limit": self.sample_num
+            samples = rest.post('samples', {
+                'limit': self.sample_num
             }).json()
 
             LOGGER.debug(samples)

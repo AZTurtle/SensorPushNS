@@ -33,8 +33,8 @@ def get(url):
         'Authorization': auth_token
     }, json={})
 
-def post(url, json):
+def post(url, data):
     return requests.post(SP_API_URL + url, headers={
         'accept': 'application/json',
         'Authorization': auth_token
-    }, json=json)
+    }, json=data)
