@@ -23,8 +23,7 @@ shortPoll interval.
 class Controller(udi_interface.Node):
     id = 'ctl'
     drivers = [
-            {'driver': 'ST', 'value': 1, 'uom': 2},
-            {'driver': 'GV0', 'value': 0, 'uom': 56},
+            {'driver': 'ST', 'value': 1, 'uom': 2}
             ]
 
     def __init__(self, polyglot, parent, address, name):
@@ -57,7 +56,6 @@ class Controller(udi_interface.Node):
         try:
             email = self.Parameters['E-Mail']
             password = self.Parameters['Password']
-            self.sample_num = int(self.Parameters["Number of Samples"])
         except Exception as e:
             LOGGER.error(e)
 
@@ -187,7 +185,7 @@ class Controller(udi_interface.Node):
     Just to show how commands are implemented. The commands here need to
     match what is in the nodedef profile file. 
     '''
-    def noop(self):
-        LOGGER.info('Discover not implemented')
+    def setSamples(self, command):
+        self.sample_num = int(command.get('value'))
 
-    commands = {'DISCOVER': noop}
+    commands = {'NUM_OF_SAMPLES': setSamples}

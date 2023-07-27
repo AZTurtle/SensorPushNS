@@ -8,7 +8,9 @@
     <cmds>
       <sends />
       <accepts>
-        <cmd id="DISCOVER" />
+        <cmd id="NUM_OF_SAMPLES">
+          <p id="" editor="raw" init="1" />
+        </cmd>
       </accepts>
     </cmds>
   </nodeDef>

@@ -1,10 +1,9 @@
-ND-ctl-NAME = Example - Counter Ctl
+ND-ctl-NAME = SensorPush Controller
 ND-ctl-ICON = Output
 ST-ctl-ST-NAME = NodeServer Online
-ST-ctl-GV0-NAME = Number of childeren
-CMD-ctl-DISCOVER-NAME = Re-Discover
+CMD-ctl-NUM_OF_SAMPLES-NAME = Number of Samples
 
-ND-child-NAME = Example - Counter Child
+ND-child-NAME = SensorPush Sensor
 ND-child-ICON = Output
 ST-str-ST-NAME = Sensor Active
 ST-str-GV0-NAME = Temperature
