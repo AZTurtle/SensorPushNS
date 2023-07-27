@@ -1,4 +1,5 @@
 import requests
+import udi_interface
 
 SP_API_URL = 'https://api.sensorpush.com/api/v1/'
 
@@ -8,4 +9,5 @@ def authorize(email, password):
             'email': email,
             'password': password
         }).json()
-    auth_token = res["authorization"]
+    if 'authorization' in res:
+        auth_token = res['authorization']

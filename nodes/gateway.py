@@ -49,12 +49,12 @@ class Controller(udi_interface.Node):
 
     def parameterHandler(self, params):
         self.Parameters.load(params)
+        self.poly.Notices.clear()
 
-        if 'E-Mail' in params and 'Password' in params:
+        email = self.Parameters['E-Mail']
+        password = self.Parameters['Password']
 
-            email = params['E-Mail']
-            password = params['Password']
-
+        if email != None and password != None:
             rest.authorize(email, password)
 
             if rest.auth_token is None:
