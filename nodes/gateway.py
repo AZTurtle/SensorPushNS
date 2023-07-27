@@ -8,7 +8,7 @@ MIT License
 import udi_interface
 import sys
 import time
-from nodes import count_child
+from nodes import sensor
 
 LOGGER = udi_interface.LOGGER
 Custom = udi_interface.Custom
