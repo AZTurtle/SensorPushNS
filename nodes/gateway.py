@@ -122,7 +122,7 @@ class Controller(udi_interface.Node):
         for i in sensors:
             try:
                 sensor_ = sensors[i]
-                node = sensor.SensorNode(self.poly, self.address, sensor_['address'], sensor_['name'])
+                node = sensor.SensorNode(self.poly, self.address, 'child' + sensor_['address'], sensor_['name'])
                 self.poly.addNode(node)
                 self.wait_for_node_done()
             except Exception as e:
