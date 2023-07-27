@@ -41,9 +41,9 @@ class Controller(udi_interface.Node):
         self.CustomParams = Custom(polyglot, 'customtypeddata')
 
         fixedParams = [
-            {name: 'email', isRequired: True},
-            {name: 'password', isRequired: True},
-            {name: 'gateways', isRequired: True, isList: True}
+            {name: 'email'},
+            {name: 'password'},
+            {name: 'gateways'}
         ]
 
         self.CustomTypedParams.load(fixedParams)
