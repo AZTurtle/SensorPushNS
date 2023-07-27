@@ -11,6 +11,13 @@ def authorize(email, password):
         }).json()
     if 'authorization' in res:
         auth_token = res['authorization']
+
         return True
     else:
         return False
+    
+def get(url):
+    return requests.post(SP_API_URL + url, headers={
+        "Content-Type": "application/json; charset=utf-8",
+        "Authorization": auth_token
+    })

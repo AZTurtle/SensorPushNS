@@ -91,6 +91,14 @@ class Controller(udi_interface.Node):
         # Not necessary to call this since profile_version is used from server.json
         self.poly.updateProfile()
 
+        try:
+            while not rest.auth_token:
+                LOGGER.info("Couldn't obatin authorization... Waiting")
+                time.sleep(1)
+        except Exception as e:
+            LOGGER.error("Failed to authorize")
+
+        self.defineSensors()
 
     '''
     Create the children nodes.  Since this will be called anytime the
@@ -99,6 +107,10 @@ class Controller(udi_interface.Node):
     number of nodes.  Because this is just a simple example, we'll first
     delete any existing nodes then create the number requested.
     '''
+
+    def defineSensors(self):
+        LOGGER.debug(rest.get("devices/gateways"))
+
     def createChildren(self, how_many):
         # delete any existing nodes
         nodes = self.poly.getNodes()
