@@ -118,9 +118,9 @@ class Controller(udi_interface.Node):
                 self.poly.delNode(node)
 
         sensors = rest.get('devices/sensors').json()
-        for sensor in sensors:
+        for i in sensors:
             try:
-                node = sensor.SensorNode(self.poly, self.address, sensor['address'], sensor['name'])
+                node = sensor.SensorNode(self.poly, self.address, i['address'], i['name'])
                 self.poly.addNode(node)
                 self.wait_for_node_done()
             except Exception as e:
