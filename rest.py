@@ -17,7 +17,6 @@ def authorize(email, password):
         return False
     
 def get(url):
-    global auth_token
     return requests.post(SP_API_URL + url, headers={
         'accept': 'application/json',
         'Authorization': auth_token
