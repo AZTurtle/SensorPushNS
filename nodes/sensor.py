@@ -15,7 +15,7 @@ Custom = udi_interface.Custom
 This is our Counter device node.  All it does is update the count at the
 poll interval.
 '''
-class CounterNode(udi_interface.Node):
+class SensorNode(udi_interface.Node):
     id = 'child'
     drivers = [
             {'driver': 'ST', 'value': 1, 'uom': 2},
@@ -25,7 +25,7 @@ class CounterNode(udi_interface.Node):
             ]
 
     def __init__(self, polyglot, parent, address, name):
-        super(CounterNode, self).__init__(polyglot, parent, address, name)
+        super(SensorNode, self).__init__(polyglot, parent, address, name)
 
         self.poly = polyglot
         self.count = 0

@@ -112,8 +112,19 @@ class Controller(udi_interface.Node):
     '''
 
     def defineSensors(self):
-        LOGGER.debug(rest.get('devices/sensors').json())
+        nodes = self.poly.getNodes()
+        for node in nodes:
+            if node != 'controller':   # but not the controller node
+                self.poly.delNode(node)
 
+        sensors = rest.get('devices/sensors').json()
+        for sensor in sensors:
+            try:
+                node = sensor.SensorNode(self.poly, self.address, sensor['address'], sensor['name'])
+                self.poly.addNode(node)
+                self.wait_for_node_done()
+            except Exception as e:
+                LOGGER.error("Couldn't create sensor")
 
     def createChildren(self, how_many):
         # delete any existing nodes
