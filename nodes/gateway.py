@@ -142,7 +142,7 @@ class Controller(udi_interface.Node):
             address = 'child_{}'.format(i)
             title = 'Child Counter {}'.format(i)
             try:
-                node = sensor.CounterNode(self.poly, self.address, address, title)
+                node = sensor.SensorNode(self.poly, self.address, address, title)
                 self.poly.addNode(node)
                 self.wait_for_node_done()
             except Exception as e:
