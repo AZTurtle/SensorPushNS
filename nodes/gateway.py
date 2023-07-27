@@ -118,23 +118,28 @@ class Controller(udi_interface.Node):
     '''
 
     def defineSensors(self):
-        nodes = self.poly.getNodes()
-        LOGGER.debug(nodes)
-        for node in nodes:
-            if node != 'controller':   # but not the controller node
-                self.poly.delNode(node)
-
         sensors = rest.get('devices/sensors').json()
         num = 0
+        nodes = self.poly.getNodes()
         for i in sensors:
-            try:
-                sensor_ = sensors[i]
-                node = sensor.SensorNode(self.poly, self.address, f'child_{num}', sensor_['name'])
-                self.poly.addNode(node)
-                self.wait_for_node_done()
-                num += 1
-            except Exception as e:
-                LOGGER.error("Couldn't create sensor: {}".format(e))
+            sensor_ = sensors[i]
+            found = False
+            for node_ in nodes:
+                node = nodes[node_]
+                if node_[:5] == "child" and node.sp_address == i:
+                    found = True
+                    break
+            if not found:
+                try:
+                    address = f'child_{num}'
+                    node = sensor.SensorNode(self.poly, self.address, sensor_['address'], address, sensor_['name'])
+                    self.sp_nodes[i] = address
+                    self.poly.addNode(node)
+                    self.wait_for_node_done()
+                except Exception as e:
+                    LOGGER.error("Couldn't create sensor: {}".format(e))
+            num += 1
+        LOGGER.debug(self.sp_nodes)
         
         self.setDriver('GV0', 2, True, True)
         

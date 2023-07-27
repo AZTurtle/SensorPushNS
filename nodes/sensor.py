@@ -24,11 +24,12 @@ class SensorNode(udi_interface.Node):
             {'driver': 'GV2', 'value': 1, 'uom': 2}
             ]
 
-    def __init__(self, polyglot, parent, address, name):
+    def __init__(self, polyglot, parent, sp_address, address, name):
         super(SensorNode, self).__init__(polyglot, parent, address, name)
 
         self.poly = polyglot
         self.count = 0
+        self.sp_address = sp_address
 
         self.Parameters = Custom(polyglot, 'customparams')
 
