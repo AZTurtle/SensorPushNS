@@ -57,7 +57,7 @@ class Controller(udi_interface.Node):
         if email and password:
             if rest.authorize(email, password):
                 self.poly.Notices.clear()
-                LOGGER.debug(rest.auth_token)
+                LOGGER.debug(rest.auth_code)
             else:
                 self.poly.Notices['nodes'] = 'Invalid username and/or password'
         else:
@@ -92,9 +92,12 @@ class Controller(udi_interface.Node):
         self.poly.updateProfile()
 
         try:
-            while not rest.auth_token:
+            while not rest.auth_code:
                 LOGGER.info("Couldn't obtain authorization... Waiting")
                 time.sleep(10)
+
+            rest.refreshAuthToken()
+            LOGGER.debug(rest.auth_token)
         except Exception as e:
             LOGGER.error("Failed to authorize")
 
