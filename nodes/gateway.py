@@ -33,6 +33,8 @@ class Controller(udi_interface.Node):
         self.poly = polyglot
         self.count = 0
         self.n_queue = []
+        self.sample_num = 1
+        self.sp_nodes = {}
 
         self.Parameters = Custom(polyglot, 'customparams')
 
@@ -51,8 +53,12 @@ class Controller(udi_interface.Node):
         self.Parameters.load(params)
         self.poly.Notices.clear()
 
-        email = self.Parameters['E-Mail']
-        password = self.Parameters['Password']
+        try:
+            email = self.Parameters['E-Mail']
+            password = self.Parameters['Password']
+            self.sample_num = self.Parameters["Number of Samples"]
+        except Exception as e:
+            LOGGER.error(e)
 
         if email and password:
             if rest.authorize(email, password):
@@ -113,6 +119,7 @@ class Controller(udi_interface.Node):
 
     def defineSensors(self):
         nodes = self.poly.getNodes()
+        LOGGER.debug(nodes)
         for node in nodes:
             if node != 'controller':   # but not the controller node
                 self.poly.delNode(node)
@@ -130,26 +137,6 @@ class Controller(udi_interface.Node):
                 LOGGER.error("Couldn't create sensor: {}".format(e))
         
         self.setDriver('GV0', 2, True, True)
-
-    def createChildren(self, how_many):
-        # delete any existing nodes
-        nodes = self.poly.getNodes()
-        for node in nodes:
-            if node != 'controller':   # but not the controller node
-                self.poly.delNode(node)
-
-        LOGGER.info('Creating {} children counters'.format(how_many))
-        for i in range(0, how_many):
-            address = 'child_{}'.format(i)
-            title = 'Child Counter {}'.format(i)
-            try:
-                node = sensor.SensorNode(self.poly, self.address, address, title)
-                self.poly.addNode(node)
-                self.wait_for_node_done()
-            except Exception as e:
-                LOGGER.error('Failed to create {}: {}'.format(title, e))
-
-        self.setDriver('GV0', how_many, True, True)
 
 
     '''

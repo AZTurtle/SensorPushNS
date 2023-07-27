@@ -18,7 +18,6 @@ if __name__ == "__main__":
         polyglot.start()
 
         
-        
         # Create the controller node
 
         gateway.Controller(polyglot, 'controller', 'controller', 'Counter')
