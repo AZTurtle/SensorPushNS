@@ -26,7 +26,7 @@ def refreshAuthToken():
         'authorization': auth_code
     }).json()
 
-    auth_token = res
+    auth_token = res['accesstoken']
     
 def get(url):
     return requests.get(SP_API_URL + url, headers={
