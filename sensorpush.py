@@ -17,10 +17,23 @@ if __name__ == "__main__":
         polyglot = udi_interface.Interface([])
         polyglot.start()
 
+        def parameterHandler(params):
+            self.Parameters.load(params)
+
+            email = self.Parameters['email']
+            password = self.Parameters['password']
+
+            if email is not None and password is not None:
+                rest.authorize("hunterbennett@hunterbennett.com", "gHfsensor123")
+
+                if rest.auth_token is None:
+                    polyglot.Notices['nodes'] = 'Invalid username and/or password'
+                else:
+                    LOGGER.debug(rest.auth_token)
+
         # Create the controller node
 
-        rest.authorize("hunterbennett@hunterbennett.com", "gHfsensor123")
-        LOGGER.debug(rest.auth_token)
+        polyglot.subscribe(polyglot.CUSTOMPARAMS, parameterHandler)
 
         gateway.Controller(polyglot, 'controller', 'controller', 'Counter')
 

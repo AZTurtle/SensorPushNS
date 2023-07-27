@@ -35,21 +35,7 @@ class Controller(udi_interface.Node):
 
         self.Parameters = Custom(polyglot, 'customparams')
 
-
-        polyglot.subscribe(polyglot.CUSTOMTYPEDDATA, self.customParameterHandler)
-        self.CustomTypedParams = Custom(polyglot, 'customtypedparams')
-        self.CustomParams = Custom(polyglot, 'customtypeddata')
-
-        fixedParams = [
-            {name: 'email'},
-            {name: 'password'},
-            {name: 'gateways'}
-        ]
-
-        self.CustomTypedParams.load(fixedParams)
-
         # subscribe to the events we want
-        polyglot.subscribe(polyglot.CUSTOMPARAMS, self.parameterHandler)
         polyglot.subscribe(polyglot.STOP, self.stop)
         polyglot.subscribe(polyglot.START, self.start, address)
         polyglot.subscribe(polyglot.ADDNODEDONE, self.node_queue)
@@ -71,32 +57,6 @@ class Controller(udi_interface.Node):
         while len(self.n_queue) == 0:
             time.sleep(0.1)
         self.n_queue.pop()
-    
-    def customParameterHandler(self, params):
-        self.CustomParams.load(params)
-
-    '''
-    Read the user entered custom parameters.  Here is where the user will
-    configure the number of child nodes that they want created.
-    '''
-    def parameterHandler(self, params):
-        self.Parameters.load(params)
-        validChildren = False
-
-        if self.Parameters['nodes'] is not None:
-            if int(self.Parameters['nodes']) > 0:
-                validChildren = True
-            else:
-                LOGGER.error('Invalid number of nodes {}'.format(self.Parameters['nodes']))
-        else:
-            LOGGER.error('Missing number of node parameter')
-
-
-        if validChildren:
-            self.createChildren(int(self.Parameters['nodes']))
-            self.poly.Notices.clear()
-        else:
-            self.poly.Notices['nodes'] = 'Please configure the number of child nodes to create.'
 
     '''
     This is called when the node is added to the interface module. It is
