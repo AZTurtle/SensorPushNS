@@ -8,8 +8,10 @@ MIT License
 import udi_interface
 import sys
 from nodes import gateway
+import requests
 
 LOGGER = udi_interface.LOGGER
+SP_API_URL = "https://api.sensorpush.com/api/v1/"
 
 if __name__ == "__main__":
     try:
@@ -17,6 +19,13 @@ if __name__ == "__main__":
         polyglot.start()
 
         # Create the controller node
+
+        res = requests.post(SP_API_URL + "oauth/authorize", data={
+            "email":"hunterbennett@hunterbennett.com",
+            "password":"gHfsensor123"
+        }).json()
+
+        LOGGER.debug(res)
 
         gateway.Controller(polyglot, 'controller', 'controller', 'Counter')
 
