@@ -8,7 +8,6 @@ MIT License
 import udi_interface
 import sys
 from nodes import gateway
-import requests
 
 LOGGER = udi_interface.LOGGER
 
@@ -18,6 +17,7 @@ if __name__ == "__main__":
         polyglot.start()
 
         # Create the controller node
+
         gateway.Controller(polyglot, 'controller', 'controller', 'Counter')
 
         # Just sit and wait for events

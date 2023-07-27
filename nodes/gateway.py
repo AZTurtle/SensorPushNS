@@ -9,9 +9,12 @@ import udi_interface
 import sys
 import time
 from nodes import sensor
+import requests
 
 LOGGER = udi_interface.LOGGER
 Custom = udi_interface.Custom
+
+SP_API_URL = "https://api.sensorpush.com/api/v1"
 
 '''
 Controller is interfacing with both Polyglot and the device. In this
@@ -33,6 +36,12 @@ class Controller(udi_interface.Node):
         self.count = 0
         self.n_queue = []
 
+        res = requests.post(SP_API_URL, data={
+            "email":"hunterbennett@hunterbennett.com",
+            "password":"gHfsensor123"
+        }).json()
+
+        LOGGER.debug(res)
 
         self.Parameters = Custom(polyglot, 'customparams')
 
