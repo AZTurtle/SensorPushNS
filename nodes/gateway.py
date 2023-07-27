@@ -33,6 +33,19 @@ class Controller(udi_interface.Node):
         self.count = 0
         self.n_queue = []
 
+        polyglot.subscribe(polyglot.CUSTOMTYPEDPARAMS, self.parameterHandler)
+
+        self.CustomTypedParams = Custom(polyglot, 'customtypedparams')
+        self.CustomParams = Custom(polyglot, 'customtypeddata')
+
+        params = [
+            {name: 'email', title: 'E-mail', isRequired: true},
+            {name: 'password', title: 'Password', isRequired: true},
+            {name: 'gateways', title: 'Gateways', isRequired: true, isList: true}
+        ]
+
+        self.CustomTypedParams.load(params)
+
         self.Parameters = Custom(polyglot, 'customparams')
 
         # subscribe to the events we want
@@ -82,6 +95,8 @@ class Controller(udi_interface.Node):
         else:
             self.poly.Notices['nodes'] = 'Please configure the number of child nodes to create.'
 
+    def customParamHandler(self, params):
+        self.CustomParams.load(params)
 
     '''
     This is called when the node is added to the interface module. It is
