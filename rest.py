@@ -17,7 +17,7 @@ def authorize(email, password):
         return False
     
 def get(url):
-    return requests.get(SP_API_URL + url, headers={
+    return requests.post(SP_API_URL + url, headers={
         'accept': 'application/json',
         'Authorization': auth_token
-    })
+    }, data={})
