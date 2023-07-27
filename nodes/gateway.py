@@ -54,7 +54,7 @@ class Controller(udi_interface.Node):
         email = self.Parameters['E-Mail']
         password = self.Parameters['Password']
 
-        if email is not None and password is not None:
+        if email and password:
             if rest.authorize(email, password):
                 self.poly.Notices.clear()
                 LOGGER.debug(rest.auth_token)
