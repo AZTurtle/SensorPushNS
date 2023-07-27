@@ -126,6 +126,8 @@ class Controller(udi_interface.Node):
                 self.wait_for_node_done()
             except Exception as e:
                 LOGGER.error("Couldn't create sensor: {}".format(e))
+        
+        self.setDriver('GV0', len(sensors), True, True)
 
     def createChildren(self, how_many):
         # delete any existing nodes
