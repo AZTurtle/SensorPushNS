@@ -62,7 +62,6 @@ class Controller(udi_interface.Node):
         if email and password:
             if rest.authorize(email, password):
                 self.poly.Notices.clear()
-                LOGGER.debug(rest.auth_code)
             else:
                 self.poly.Notices['nodes'] = 'Invalid username and/or password'
         else:
@@ -102,7 +101,6 @@ class Controller(udi_interface.Node):
                 time.sleep(10)
 
             rest.refreshAuthToken()
-            LOGGER.debug(rest.auth_token)
         except Exception as e:
             LOGGER.error("Failed to authorize")
 
@@ -139,8 +137,6 @@ class Controller(udi_interface.Node):
                 except Exception as e:
                     LOGGER.error("Couldn't create sensor: {}".format(e))
             num += 1
-
-        LOGGER.debug(self.sp_nodes)
         
         self.setDriver('GV0', 2, True, True)
 
@@ -153,7 +149,6 @@ class Controller(udi_interface.Node):
                 'limit': self.sample_num
             }).json()
 
-            LOGGER.debug(samples)
             sensors = samples['sensors']
 
             for sample in sensors:
@@ -166,6 +161,7 @@ class Controller(udi_interface.Node):
                     sensor_ = sensors[sample]
                     address = self.sp_nodes[sample]
                     nodes[address].setDriver('GV0', int(sensor_[0]['temperature']), True, True)
+                    nodes[address].setDriver('GV1', int(sensor_[0]['humidity']), True, True)
 
 
     '''
