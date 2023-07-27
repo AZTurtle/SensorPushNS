@@ -112,7 +112,7 @@ class Controller(udi_interface.Node):
     '''
 
     def defineSensors(self):
-        LOGGER.debug(rest.get('devices/gateways').json())
+        LOGGER.debug(rest.get('devices/sensors').json())
 
 
     def createChildren(self, how_many):
