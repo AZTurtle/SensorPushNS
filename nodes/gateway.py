@@ -155,6 +155,7 @@ class Controller(udi_interface.Node):
                 "limit": self.sample_num
             }).json()
 
+            LOGGER.debug(samples)
             sensors = samples['sensors']
 
             for sample in sensors:
