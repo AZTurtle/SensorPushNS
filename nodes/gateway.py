@@ -33,8 +33,6 @@ class Controller(udi_interface.Node):
         self.count = 0
         self.n_queue = []
 
-        self.Parameters = Custom(polyglot, 'customparams')
-
         # subscribe to the events we want
         polyglot.subscribe(polyglot.STOP, self.stop)
         polyglot.subscribe(polyglot.START, self.start, address)
