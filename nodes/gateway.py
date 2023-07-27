@@ -110,6 +110,7 @@ class Controller(udi_interface.Node):
 
     def defineSensors(self):
         LOGGER.debug(rest.get("devices/gateways"))
+        
 
     def createChildren(self, how_many):
         # delete any existing nodes
