@@ -1,5 +1,4 @@
 import requests
-import udi_interface
 
 SP_API_URL = 'https://api.sensorpush.com/api/v1/'
 auth_code = ''
@@ -29,7 +28,7 @@ def refreshAuthToken():
     auth_token = res['accesstoken']
     
 def get(url):
-    return requests.get(SP_API_URL + url, headers={
+    return requests.post(SP_API_URL + url, headers={
         'accept': 'application/json',
         'Authorization': auth_token
-    })
+    }, json={})
