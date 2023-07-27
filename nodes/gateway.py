@@ -117,6 +117,7 @@ class Controller(udi_interface.Node):
             if node != 'controller':   # but not the controller node
                 self.poly.delNode(node)
 
+        self.createChildren(2)
         sensors = rest.get('devices/sensors').json()
         for i in sensors:
             try:
