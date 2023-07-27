@@ -11,3 +11,6 @@ def authorize(email, password):
         }).json()
     if 'authorization' in res:
         auth_token = res['authorization']
+        return True
+    else:
+        return False

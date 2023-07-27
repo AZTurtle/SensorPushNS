@@ -54,14 +54,12 @@ class Controller(udi_interface.Node):
         email = self.Parameters['E-Mail']
         password = self.Parameters['Password']
 
-        if email != None and password != None:
-            rest.authorize(email, password)
-
-            if rest.auth_token is None:
-                self.poly.Notices['nodes'] = 'Invalid username and/or password'
-            else:
+        if email is not None and password is not None:
+            if rest.authorize(email, password):
                 self.poly.Notices.clear()
                 LOGGER.debug(rest.auth_token)
+            else:
+                self.poly.Notices['nodes'] = 'Invalid username and/or password'
         else:
             self.poly.Notices['nodes'] = 'Please provide an E-Mail and Password'
 
