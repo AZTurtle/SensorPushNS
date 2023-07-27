@@ -57,7 +57,7 @@ class Controller(udi_interface.Node):
         try:
             email = self.Parameters['E-Mail']
             password = self.Parameters['Password']
-            self.sample_num = self.Parameters["Number of Samples"]
+            self.sample_num = int(self.Parameters["Number of Samples"])
         except Exception as e:
             LOGGER.error(e)
 
