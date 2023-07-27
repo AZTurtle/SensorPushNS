@@ -128,6 +128,7 @@ class Controller(udi_interface.Node):
                 node = nodes[node_]
                 if node_[:5] == "child" and node.sp_address == i:
                     found = True
+                    LOGGER.debug(f'{sensor_["name"]} has already been created')
                     break
             if not found:
                 try:
@@ -139,12 +140,10 @@ class Controller(udi_interface.Node):
                 except Exception as e:
                     LOGGER.error("Couldn't create sensor: {}".format(e))
             num += 1
+
         LOGGER.debug(self.sp_nodes)
         
         self.setDriver('GV0', 2, True, True)
-        
-        nodes = self.poly.getNodes()
-        LOGGER.debug(nodes)
 
 
     '''
