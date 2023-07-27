@@ -35,6 +35,19 @@ class Controller(udi_interface.Node):
 
         self.Parameters = Custom(polyglot, 'customparams')
 
+
+        polyglot.subscribe(polyglot.CUSTOMTYPEDDATA, self.customParameterHandler)
+        self.CustomTypedParams = Custom(polyglot, 'customtypedparams')
+        self.CustomParams = Custom(polyglot, 'customtypeddata')
+
+        fixedParams = [
+            {name: 'email', title: 'E-mail', isRequired: true},
+            {name: 'password', title: 'Password', isRequired: true},
+            {name: 'gateways', title: 'Gateways', isRequired: true, isList: true}
+        ]
+
+        self.CustomTypedParams.load(fixedParams)
+
         # subscribe to the events we want
         polyglot.subscribe(polyglot.CUSTOMPARAMS, self.parameterHandler)
         polyglot.subscribe(polyglot.STOP, self.stop)
@@ -58,6 +71,9 @@ class Controller(udi_interface.Node):
         while len(self.n_queue) == 0:
             time.sleep(0.1)
         self.n_queue.pop()
+    
+    def customParameterHandler(self, params):
+        self.CustomParams.load(params)
 
     '''
     Read the user entered custom parameters.  Here is where the user will
