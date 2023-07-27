@@ -6,8 +6,6 @@ CMD-ctl-DISCOVER-NAME = Re-Discover
 
 ND-child-NAME = Example - Counter Child
 ND-child-ICON = Output
-ST-str-ST-NAME = Counter Active
-ST-str-GV0-NAME = raw data 0
-ST-str-GV1-NAME = raw data 1
-ST-str-GV2-NAME = Enable Increment
+ST-str-ST-NAME = Sensor Active
+ST-str-GV0-NAME = Temperature
 CMD-SET_INCREMENT-NAME = Set Enable Increment
