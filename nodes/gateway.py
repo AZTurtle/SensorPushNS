@@ -93,8 +93,8 @@ class Controller(udi_interface.Node):
 
         try:
             while not rest.auth_token:
-                LOGGER.info("Couldn't obatin authorization... Waiting")
-                time.sleep(1)
+                LOGGER.info("Couldn't obtain authorization... Waiting")
+                time.sleep(10)
         except Exception as e:
             LOGGER.error("Failed to authorize")
 
@@ -109,8 +109,8 @@ class Controller(udi_interface.Node):
     '''
 
     def defineSensors(self):
-        LOGGER.debug(rest.get("devices/gateways"))
-        
+        LOGGER.debug(rest.get("devices/gateways").json())
+
 
     def createChildren(self, how_many):
         # delete any existing nodes
