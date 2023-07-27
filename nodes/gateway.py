@@ -137,6 +137,9 @@ class Controller(udi_interface.Node):
                 LOGGER.error("Couldn't create sensor: {}".format(e))
         
         self.setDriver('GV0', 2, True, True)
+        
+        nodes = self.poly.getNodes()
+        LOGGER.debug(nodes)
 
 
     '''
