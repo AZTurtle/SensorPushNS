@@ -8,6 +8,7 @@ MIT License
 import udi_interface
 import sys
 from nodes import gateway
+import requests
 
 LOGGER = udi_interface.LOGGER
 
