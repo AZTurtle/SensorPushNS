@@ -21,6 +21,7 @@ def generateGateways(polyglot):
     global gateways
 
     gateway_data = rest.get('devices/gateways')
+    LOGGER.debug(gateway_data)
 
     for k in gateway_data:
         gateway_ = gateway_data[k]
