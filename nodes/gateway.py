@@ -38,7 +38,6 @@ class Controller(udi_interface.Node):
         # subscribe to the events we want
         
         polyglot.subscribe(polyglot.STOP, self.stop)
-        polyglot.subscribe(polyglot.START, self.start, address)
         polyglot.subscribe(polyglot.POLL, self.poll)
 
         # start processing events and create add our controller node
@@ -62,21 +61,6 @@ class Controller(udi_interface.Node):
     Here we load the custom parameter configuration document and push
     the profiles to the ISY.
     '''
-    def start(self):
-        self.poly.setCustomParamsDoc()
-        # Not necessary to call this since profile_version is used from server.json
-        self.poly.updateProfile()
-
-        try:
-            while not rest.auth_code:
-                LOGGER.info("Couldn't obtain authorization... Waiting")
-                time.sleep(10)
-
-            rest.refreshAuthToken()
-        except Exception as e:
-            LOGGER.error("Failed to authorize")
-
-        self.defineSensors()
 
     '''
     Create the children nodes.  Since this will be called anytime the

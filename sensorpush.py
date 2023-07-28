@@ -63,6 +63,16 @@ if __name__ == "__main__":
             if email and password:
                 if rest.authorize(email, password):
                     polyglot.Notices.clear()
+                    
+                    try:
+                        while not rest.auth_code:
+                            LOGGER.info("Couldn't obtain authorization... Waiting")
+                            time.sleep(10)
+
+                        rest.refreshAuthToken()
+                    except Exception as e:
+                        LOGGER.error("Failed to authorize")
+
                     generateGateways(polyglot)
                 else:
                     polyglot.Notices['nodes'] = 'Invalid username and/or password'
