@@ -9,20 +9,35 @@ import udi_interface
 import sys
 from nodes import gateway
 import rest
+import time
 
 LOGGER = udi_interface.LOGGER
 Custom = udi_interface.Custom
 
 gateways = {}
+n_queue = []
 
 def generateGateways(polyglot):
     global gateways
 
     gateway_data = rest.get('devices/gateways')
 
-    gateways = {gateway_data[gateway]['id']:gateway for gateway in gateway_data}
+    for k in gateway_data:
+        gateway_ = gateway_data[k]
+        try:
+            gateway.Controller(polyglot, 'controller', 'controller', gateway_['name'])
+        except Exception as e:
+            LOGGER.error('Error when creating gateway {}'.format(e))
 
-    LOGGER.debug(gateways)
+def node_queue(data):
+    global n_queue
+
+    n_queue.append(data['address'])
+
+def wait_for_node_done():
+    while len(n_queue) == 0:
+        time.sleep(0.1)
+    n_queue.pop()
 
 if __name__ == "__main__":
     try:
@@ -47,6 +62,7 @@ if __name__ == "__main__":
             if email and password:
                 if rest.authorize(email, password):
                     polyglot.Notices.clear()
+                    polyglot.ready()
                     generateGateways(polyglot)
                 else:
                     polyglot.Notices['nodes'] = 'Invalid username and/or password'
@@ -55,11 +71,14 @@ if __name__ == "__main__":
         
         
         polyglot.subscribe(polyglot.CUSTOMPARAMS, parameterHandler)
+        polyglot.subscribe(polyglot.ADDNODEDONE, node_queue)
+
+
+        polyglot.setCustomParamsDoc()
+        polyglot.updateProfile()
 
         # Create the controller node
-
-        gateway.Controller(polyglot, 'controller', 'controller', 'Counter')
-
+        polyglot.ready()
         # Just sit and wait for events
         polyglot.runForever()
     except (KeyboardInterrupt, SystemExit):

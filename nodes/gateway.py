@@ -39,11 +39,9 @@ class Controller(udi_interface.Node):
         
         polyglot.subscribe(polyglot.STOP, self.stop)
         polyglot.subscribe(polyglot.START, self.start, address)
-        polyglot.subscribe(polyglot.ADDNODEDONE, self.node_queue)
         polyglot.subscribe(polyglot.POLL, self.poll)
 
         # start processing events and create add our controller node
-        polyglot.ready()
         self.poly.addNode(self)
 
     
@@ -54,13 +52,6 @@ class Controller(udi_interface.Node):
     will return before the node is fully created. Using this, we can wait
     until it is fully created before we try to use it.
     '''
-    def node_queue(self, data):
-        self.n_queue.append(data['address'])
-
-    def wait_for_node_done(self):
-        while len(self.n_queue) == 0:
-            time.sleep(0.1)
-        self.n_queue.pop()
 
     '''
     This is called when the node is added to the interface module. It is
