@@ -96,7 +96,7 @@ class Controller(udi_interface.Node):
     '''
 
     def defineSensors(self):
-        sensors = rest.get('devices/sensors').json()
+        sensors = rest.get('devices/sensors')
         num = 0
         nodes = self.poly.getNodes()
         for i in sensors:
@@ -128,7 +128,7 @@ class Controller(udi_interface.Node):
         if 'shortPoll' in polltype:
             samples = rest.post('samples', {
                 'limit': self.sample_num
-            }).json()
+            })
 
             sensors = samples['sensors']
 
