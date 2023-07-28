@@ -32,14 +32,11 @@ class Controller(udi_interface.Node):
         self.poly = polyglot
         self.count = 0
         self.n_queue = []
-        self.sample_num = 1
+        self.sample_num = 0
         self.sp_nodes = {}
-
-        self.Parameters = Custom(polyglot, 'customparams')
 
         # subscribe to the events we want
         
-        polyglot.subscribe(polyglot.CUSTOMPARAMS, self.parameterHandler)
         polyglot.subscribe(polyglot.STOP, self.stop)
         polyglot.subscribe(polyglot.START, self.start, address)
         polyglot.subscribe(polyglot.ADDNODEDONE, self.node_queue)
@@ -49,23 +46,7 @@ class Controller(udi_interface.Node):
         polyglot.ready()
         self.poly.addNode(self)
 
-    def parameterHandler(self, params):
-        self.Parameters.load(params)
-        self.poly.Notices.clear()
-
-        try:
-            email = self.Parameters['E-Mail']
-            password = self.Parameters['Password']
-        except Exception as e:
-            LOGGER.error(e)
-
-        if email and password:
-            if rest.authorize(email, password):
-                self.poly.Notices.clear()
-            else:
-                self.poly.Notices['nodes'] = 'Invalid username and/or password'
-        else:
-            self.poly.Notices['nodes'] = 'Please provide an E-Mail and Password'
+    
 
     '''
     node_queue() and wait_for_node_event() create a simple way to wait
@@ -175,13 +156,3 @@ class Controller(udi_interface.Node):
                 nodes[node].setDriver('ST', 0, True, True)
 
         self.poly.stop()
-
-
-    '''
-    Just to show how commands are implemented. The commands here need to
-    match what is in the nodedef profile file. 
-    '''
-    def setSamples(self, command):
-        self.sample_num = int(command.get('value'))
-
-    commands = {'NUM_OF_SAMPLES': setSamples}

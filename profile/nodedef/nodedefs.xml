@@ -4,14 +4,6 @@
     <sts>
       <st id="ST" editor="bool" />
 	</sts>
-    <cmds>
-      <sends />
-      <accepts>
-        <cmd id="NUM_OF_SAMPLES">
-          <p id="" editor="raw" init="1" />
-        </cmd>
-      </accepts>
-    </cmds>
   </nodeDef>
 
   <nodeDef id="child" nodeType="139" nls="str">

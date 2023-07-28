@@ -1,7 +1,6 @@
 ND-ctl-NAME = SensorPush Controller
 ND-ctl-ICON = Output
 ST-ctl-ST-NAME = NodeServer Online
-CMD-ctl-NUM_OF_SAMPLES-NAME = Number of Samples
 
 ND-child-NAME = SensorPush Sensor
 ND-child-ICON = Output
