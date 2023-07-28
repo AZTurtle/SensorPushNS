@@ -20,7 +20,7 @@ def generateGateways(polyglot):
 
     gateway_data = rest.get('devices/gateways')
 
-    gateways = {gateway:gateway_data[gateway]['name'] for gateway in gateway_data}
+    gateways = {gateway_data[gateway]['id']:gateway for gateway in gateway_data}
 
     LOGGER.debug(gateways)
 
