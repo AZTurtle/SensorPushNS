@@ -63,7 +63,6 @@ if __name__ == "__main__":
             if email and password:
                 if rest.authorize(email, password):
                     polyglot.Notices.clear()
-                    polyglot.ready()
                     generateGateways(polyglot)
                 else:
                     polyglot.Notices['nodes'] = 'Invalid username and/or password'
