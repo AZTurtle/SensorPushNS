@@ -96,7 +96,7 @@ class Controller(udi_interface.Node):
                 self.wait_for_node_done()
                 num += 1
             except Exception as e:
-                LOGGER.error('Error when creating gateway {}'.format(e))
+                LOGGER.error('Error when creating sensor: {}'.format(e))
 
 
     def poll(self, polltype):
