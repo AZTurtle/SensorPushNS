@@ -65,6 +65,7 @@ def generateGateways(polyglot):
             node = gateway.Controller(polyglot, addr, addr, gateway_['name'], sensors)
             polyglot.addNode(node)
             wait_for_node_done()
+            num += 1
         except Exception as e:
             LOGGER.error('Error when creating gateway {}'.format(e))
 
