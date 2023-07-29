@@ -61,7 +61,7 @@ class Controller(udi_interface.Node):
         if 'shortPoll' in polltype:
             LOGGER.debug(self.sensors.keys())
             res = rest.post('samples', {
-                'sensors': self.sensors.keys(),
+                'sensors': list(self.sensors.keys()),
                 'limit': 2
             })
 
