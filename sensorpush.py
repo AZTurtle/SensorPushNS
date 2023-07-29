@@ -24,7 +24,7 @@ def node_queue(data):
 
 def wait_for_node_done():
     while len(n_queue) == 0:
-        time.sleep(0.1)
+        time.sleep(10)
     n_queue.pop()
 
 def generateGateways(polyglot):
