@@ -68,7 +68,7 @@ class Controller(udi_interface.Node):
 
             sensor_data = res['sensors']
             for k in sensor_data:
-                data = sensor_data[k]
+                data = sensor_data[k][0]
                 self.sensors[k].setDriver('GV0', int(data['temperature']), True, True)
                 self.sensors[k].setDriver('GV1', int(data['humidity']), True, True) 
 
