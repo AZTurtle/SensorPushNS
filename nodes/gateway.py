@@ -59,13 +59,12 @@ class Controller(udi_interface.Node):
 
     def poll(self, polltype):
         if 'shortPoll' in polltype:
-            LOGGER.debug(self.sensors.keys())
             res = rest.post('samples', {
                 'sensors': list(self.sensors.keys()),
                 'limit': 2
             })
 
-            LOGGER.debug(res)
+            LOGGER.debug(self.sensors)
 
             sensor_data = res['sensors']
             for k in sensor_data:
