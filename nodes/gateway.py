@@ -20,7 +20,7 @@ class Controller(udi_interface.Node):
             {'driver': 'ST', 'value': 1, 'uom': 2}
             ]
 
-    def __init__(self, polyglot, parent, address, name, sensor_list, start_num):
+    def __init__(self, polyglot, parent, address, name, sensor_list, start_num, limit):
         super(Controller, self).__init__(polyglot, parent, address, name)
 
         self.poly = polyglot
@@ -28,6 +28,7 @@ class Controller(udi_interface.Node):
         self.n_queue = []
         self.sensor_list = sensor_list
         self.num = start_num
+        self.limit = limit
         
         polyglot.subscribe(polyglot.START, self.start, address)
         polyglot.subscribe(polyglot.STOP, self.stop)
@@ -61,7 +62,7 @@ class Controller(udi_interface.Node):
         if 'shortPoll' in polltype:
             res = rest.post('samples', {
                 'sensors': list(self.sensors.keys()),
-                'limit': 2
+                'limit': self.limit
             })
 
             LOGGER.debug(self.sensors)

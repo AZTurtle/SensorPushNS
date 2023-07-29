@@ -23,13 +23,12 @@ def node_queue(data):
     n_queue.append(data['address'])
 
 def wait_for_node_done():
+    global n_queue
     while len(n_queue) == 0:
         time.sleep(0.1)
     n_queue.pop()
 
 def generateGateways(polyglot):
-    global gateways
-
     gateway_data = rest.get('devices/gateways')
 
     sensor_info = rest.get('devices/sensors')
@@ -63,7 +62,7 @@ def generateGateways(polyglot):
                 LOGGER.debug('No sensors for {}'.format(gateway_['name']))
 
             addr = f'controller_{num}'
-            node = gateway.Controller(polyglot, addr, addr, gateway_['name'], sensors, start_num)
+            node = gateway.Controller(polyglot, addr, addr, gateway_['name'], sensors, start_num, sample_num)
             start_num += len(sensors)
             polyglot.addNode(node)
             wait_for_node_done()
