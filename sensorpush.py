@@ -39,6 +39,8 @@ def generateGateways(polyglot):
         'limit': sample_num
     })
 
+    LOGGER.debug(sample_data)
+
     sensor_data = sample_data['sensors']
 
     gateway_sensors = {[]}
