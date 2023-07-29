@@ -34,13 +34,11 @@ class Controller(udi_interface.Node):
         self.poly = polyglot
         self.count = 0
         self.n_queue = []
-
-        self.defineSensors(sensor_list)
-
-        LOGGER.debug(self.sensors)
+        self.sensor_list = sensor_list
 
         # subscribe to the events we want
         
+        polyglot.subscribe(polyglot.START, self.start)
         polyglot.subscribe(polyglot.STOP, self.stop)
         polyglot.subscribe(polyglot.POLL, self.poll)
         polyglot.subscribe(polyglot.ADDNODEDONE, self.node_queue)
@@ -82,12 +80,12 @@ class Controller(udi_interface.Node):
             time.sleep(0.1)
         self.n_queue.pop()
 
-    def defineSensors(self, sensor_list):
+    def defineSensors(self):
         global num
 
         self.sensors = {}
 
-        for i in sensor_list:
+        for i in self.sensor_list:
             try:
                 node = sensor.SensorNode(self.poly, self.address, f'child_{num}', i[1])
                 self.poly.addNode(node)
@@ -120,6 +118,9 @@ class Controller(udi_interface.Node):
                     nodes[address].setDriver('GV0', int(sensor_[0]['temperature']), True, True)
                     nodes[address].setDriver('GV1', int(sensor_[0]['humidity']), True, True)
 
+    def start(self):  
+        self.defineSensors()
+        LOGGER.debug(self.sensors)
 
     '''
     Change all the child node active status drivers to false
