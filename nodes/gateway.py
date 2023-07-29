@@ -44,17 +44,15 @@ class Controller(udi_interface.Node):
     def defineSensors(self, sensors):
 
         self.sensors = sensors
-        '''
-        for i in self.sensor_list:
+
+        for i in self.sensors.values():
             try:
-                node = sensor.SensorNode(self.poly, self.address, f'child_{self.num}', i[1])
-                self.poly.addNode(node)
-                self.sensors[i[0]] = node
+                self.poly.addNode(i)
                 self.wait_for_node_done()
                 self.num += 1
             except Exception as e:
                 LOGGER.error('Error when creating sensor: {}'.format(e))
-        '''
+        
 
 
     def poll(self, polltype):

@@ -74,8 +74,6 @@ def generateGateways(polyglot):
                 sensor_addr = f'child_{sensor_num}'
                 sensor_ = sensor.SensorNode(polyglot, addr, sensor_addr, sensor_info[i]['name'])
                 total_sensors[i] = sensor_
-                polyglot.addNode(sensor_)
-                wait_for_node_done()
 
                 data = sensor_data[i][0]
                 sensor_.setDriver('GV0', int(data['temperature']), True, True)
