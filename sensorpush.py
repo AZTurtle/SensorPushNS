@@ -43,11 +43,11 @@ def generateGateways(polyglot):
 
     sensor_data = sample_data['sensors']
 
-    gateway_sensors = {[]}
+    gateway_sensors = {}
 
     for k in sensor_data:
         sensor_ = sensor_data[k]
-        gateway_sensors[sensor_[0]['gateways']].append([k, sensor_info[k]])
+        gateway_sensors[sensor_[0]['gateways']].append([k, sensor_info[k]['name']])
 
     for k in gateway_data:
         gateway_ = gateway_data[k]
