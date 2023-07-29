@@ -81,7 +81,7 @@ if __name__ == "__main__":
 
             email = Parameters['E-Mail']
             password = Parameters['Password']
-            sample_num = Parameters['Number of Samples']
+            sample_num = int(Parameters['Number of Samples'])
 
             if email and password:
                 if rest.authorize(email, password):
