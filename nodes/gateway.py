@@ -89,8 +89,7 @@ class Controller(udi_interface.Node):
 
         for i in sensor_list:
             try:
-                addr = f'child_{num}'
-                node = sensor.SensorNode(self.poly, self.address, addr, i[1])
+                node = sensor.SensorNode(self.poly, self.address, f'child_{num}', i[1])
                 self.poly.addNode(node)
                 self.sensors[i[0]] = node
                 self.wait_for_node_done()

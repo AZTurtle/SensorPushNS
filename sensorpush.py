@@ -61,7 +61,7 @@ def generateGateways(polyglot):
             if not sensors:
                 LOGGER.debug('No sensors for {}'.format(gateway_['name']))
 
-            addr = f'controller'
+            addr = f'controller_{num}'
             node = gateway.Controller(polyglot, addr, addr, gateway_['name'], sensors)
             polyglot.addNode(node)
             wait_for_node_done()
