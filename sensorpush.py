@@ -47,7 +47,11 @@ def generateGateways(polyglot):
 
     for k in sensor_data:
         sensor_ = sensor_data[k]
-        gateway_sensors[sensor_[0]['gateways']].append([k, sensor_info[k]['name']])
+        addr = sensor_[0]['gateways']
+        if addr in gateway_sensors:
+            gateway_sensors[addr].append([k, sensor_info[k]['name']])
+        else:
+            gateway_sensors[addr] = [k, sensor_info[k]['name']]
 
     for k in gateway_data:
         gateway_ = gateway_data[k]
