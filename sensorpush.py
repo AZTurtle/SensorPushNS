@@ -31,15 +31,12 @@ def generateGateways(polyglot):
     global gateways
 
     gateway_data = rest.get('devices/gateways')
-    LOGGER.debug(gateway_data)
 
     sensor_info = rest.get('devices/sensors')
 
     sample_data = rest.post('samples', {
         'limit': sample_num
     })
-
-    LOGGER.debug(sample_data)
 
     sensor_data = sample_data['sensors']
 
@@ -51,8 +48,10 @@ def generateGateways(polyglot):
         if addr in gateway_sensors:
             gateway_sensors[addr].append([k, sensor_info[k]['name']])
         else:
-            gateway_sensors[addr] = [k, sensor_info[k]['name']]
+            gateway_sensors[addr] = []
+            gateway_sensors[addr].appen([k, sensor_info[k]['name']])
 
+    num = 0
     for k in gateway_data:
         gateway_ = gateway_data[k]
         id = gateway_['id']
@@ -62,7 +61,8 @@ def generateGateways(polyglot):
             if not sensors:
                 LOGGER.debug('No sensors for {}'.format(gateway_['name']))
 
-            node = gateway.Controller(polyglot, 'controller', 'controller', gateway_['name'], sensors)
+            addr = f'controller_{num}'
+            node = gateway.Controller(polyglot, addr, addr, gateway_['name'], sensors)
             polyglot.addNode(node)
             wait_for_node_done()
         except Exception as e:
