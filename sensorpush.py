@@ -52,6 +52,7 @@ def generateGateways(polyglot):
             gateway_sensors[addr].append([k, sensor_info[k]['name']])
 
     num = 0
+    start_num = 0
     for k in gateway_data:
         gateway_ = gateway_data[k]
         id = gateway_['id']
@@ -62,10 +63,10 @@ def generateGateways(polyglot):
                 LOGGER.debug('No sensors for {}'.format(gateway_['name']))
 
             addr = f'controller_{num}'
-            node = gateway.Controller(polyglot, addr, addr, gateway_['name'], sensors)
+            node = gateway.Controller(polyglot, addr, addr, gateway_['name'], sensors, start_num)
+            start_num += len(sensors)
             polyglot.addNode(node)
             wait_for_node_done()
-            node.defineSensors()
             num += 1
         except Exception as e:
             LOGGER.error('Error when creating gateway {}'.format(e))

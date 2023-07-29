@@ -14,8 +14,6 @@ import rest
 LOGGER = udi_interface.LOGGER
 Custom = udi_interface.Custom
 
-num = 0
-
 '''
 Controller is interfacing with both Polyglot and the device. In this
 case the device is just a count that has two values, the count and the count
@@ -28,13 +26,14 @@ class Controller(udi_interface.Node):
             {'driver': 'ST', 'value': 1, 'uom': 2}
             ]
 
-    def __init__(self, polyglot, parent, address, name, sensor_list):
+    def __init__(self, polyglot, parent, address, name, sensor_list, start_num):
         super(Controller, self).__init__(polyglot, parent, address, name)
 
         self.poly = polyglot
         self.count = 0
         self.n_queue = []
         self.sensor_list = sensor_list
+        self.num = start_num
 
         # subscribe to the events we want
         
@@ -81,17 +80,16 @@ class Controller(udi_interface.Node):
         self.n_queue.pop()
 
     def defineSensors(self):
-        global num
 
         self.sensors = {}
 
         for i in self.sensor_list:
             try:
-                node = sensor.SensorNode(self.poly, self.address, f'child_{num}', i[1])
+                node = sensor.SensorNode(self.poly, self.address, f'child_{self.num}', i[1])
                 self.poly.addNode(node)
                 self.sensors[i[0]] = node
                 self.wait_for_node_done()
-                num += 1
+                self.num += 1
             except Exception as e:
                 LOGGER.error('Error when creating sensor: {}'.format(e))
 
