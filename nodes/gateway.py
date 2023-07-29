@@ -26,7 +26,7 @@ class Controller(udi_interface.Node):
             {'driver': 'ST', 'value': 1, 'uom': 2}
             ]
 
-    def __init__(self, polyglot, parent, address, name):
+    def __init__(self, polyglot, parent, address, name, sensors):
         super(Controller, self).__init__(polyglot, parent, address, name)
 
         self.poly = polyglot
@@ -34,6 +34,8 @@ class Controller(udi_interface.Node):
         self.n_queue = []
         self.sample_num = 0
         self.sp_nodes = {}
+        self.sensors = sensors
+        LOGGER.debug(self.sensors)
 
         # subscribe to the events we want
         
@@ -41,7 +43,6 @@ class Controller(udi_interface.Node):
         polyglot.subscribe(polyglot.POLL, self.poll)
 
         # start processing events and create add our controller node
-        self.poly.addNode(self)
 
     
 

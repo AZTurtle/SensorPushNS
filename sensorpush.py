@@ -14,21 +14,8 @@ import time
 LOGGER = udi_interface.LOGGER
 Custom = udi_interface.Custom
 
-gateways = {}
+sample_num = 0
 n_queue = []
-
-def generateGateways(polyglot):
-    global gateways
-
-    gateway_data = rest.get('devices/gateways')
-    LOGGER.debug(gateway_data)
-
-    for k in gateway_data:
-        gateway_ = gateway_data[k]
-        try:
-            gateway.Controller(polyglot, 'controller', 'controller', gateway_['name'])
-        except Exception as e:
-            LOGGER.error('Error when creating gateway {}'.format(e))
 
 def node_queue(data):
     global n_queue
@@ -40,6 +27,41 @@ def wait_for_node_done():
         time.sleep(0.1)
     n_queue.pop()
 
+def generateGateways(polyglot):
+    global gateways
+
+    gateway_data = rest.get('devices/gateways')
+    LOGGER.debug(gateway_data)
+
+    sensor_info = rest.get('devices/sensors')
+
+    sample_data = rest.post('samples', {
+        'limit': sample_num
+    })
+
+    sensor_data = sample_data['sensors']
+
+    gateway_sensors = {[]}
+
+    for k in sensor_data:
+        sensor_ = sensor_data[k]
+        gateway_sensors[sensor_[0]['gateways']].append([k, sensor_info[k]])
+
+    for k in gateway_data:
+        gateway_ = gateway_data[k]
+        id = gateway_['id']
+        try:
+            sensors = gateway_sensors[id]
+
+            if not sensors:
+                LOGGER.debug('No sensors for {}'.format(gateway_['name']))
+
+            node = gateway.Controller(polyglot, 'controller', 'controller', gateway_['name'], sensors)
+            polyglot.addNode(node)
+            wait_for_node_done()
+        except Exception as e:
+            LOGGER.error('Error when creating gateway {}'.format(e))
+
 if __name__ == "__main__":
     try:
         polyglot = udi_interface.Interface([])
@@ -48,7 +70,6 @@ if __name__ == "__main__":
         LOGGER.debug(polyglot.getNodesFromDb())
 
         Parameters = Custom(polyglot, 'customparams')
-        sample_num = 0
 
         def parameterHandler(params):
             global sample_num
