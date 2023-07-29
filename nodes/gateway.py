@@ -14,6 +14,8 @@ import rest
 LOGGER = udi_interface.LOGGER
 Custom = udi_interface.Custom
 
+num = 0
+
 '''
 Controller is interfacing with both Polyglot and the device. In this
 case the device is just a count that has two values, the count and the count
@@ -26,21 +28,22 @@ class Controller(udi_interface.Node):
             {'driver': 'ST', 'value': 1, 'uom': 2}
             ]
 
-    def __init__(self, polyglot, parent, address, name, sensors):
+    def __init__(self, polyglot, parent, address, name, sensor_list):
         super(Controller, self).__init__(polyglot, parent, address, name)
 
         self.poly = polyglot
         self.count = 0
         self.n_queue = []
-        self.sample_num = 0
-        self.sp_nodes = {}
-        self.sensors = sensors
+
+        self.defineSensors(sensor_list)
+
         LOGGER.debug(self.sensors)
 
         # subscribe to the events we want
         
         polyglot.subscribe(polyglot.STOP, self.stop)
         polyglot.subscribe(polyglot.POLL, self.poll)
+        polyglot.subscribe(polyglot.ADDNODEDONE, self.node_queue)
 
         # start processing events and create add our controller node
 
@@ -71,31 +74,29 @@ class Controller(udi_interface.Node):
     delete any existing nodes then create the number requested.
     '''
 
-    def defineSensors(self):
-        sensors = rest.get('devices/sensors')
-        num = 0
-        nodes = self.poly.getNodes()
-        for i in sensors:
-            sensor_ = sensors[i]
-            found = False
-            for node_ in nodes:
-                node = nodes[node_]
-                if node_[:5] == "child" and node.sp_address == i:
-                    found = True
-                    LOGGER.debug(f'{sensor_["name"]} has already been created')
-                    break
-            if not found:
-                try:
-                    address = f'child_{num}'
-                    node = sensor.SensorNode(self.poly, self.address, sensor_['address'], address, sensor_['name'])
-                    self.sp_nodes[i] = address
-                    self.poly.addNode(node)
-                    self.wait_for_node_done()
-                except Exception as e:
-                    LOGGER.error("Couldn't create sensor: {}".format(e))
-            num += 1
-        
-        self.setDriver('GV0', 2, True, True)
+    def node_queue(self, data):
+        self.n_queue.append(data['address'])
+
+    def wait_for_node_done(self):
+        while len(self.n_queue) == 0:
+            time.sleep(0.1)
+        self.n_queue.pop()
+
+    def defineSensors(self, sensor_list):
+        global num
+
+        self.sensors = {}
+
+        for i in sensor_list:
+            try:
+                addr = f'child_{num}'
+                node = sensor.SensorNode(self.poly, self.address, addr, i[1])
+                self.poly.addNode(node)
+                self.sensors[i[0]] = node
+                self.wait_for_node_done()
+                num += 1
+            except Exception as e:
+                LOGGER.error('Error when creating gateway {}'.format(e))
 
 
     def poll(self, polltype):
