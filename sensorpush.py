@@ -8,6 +8,7 @@ MIT License
 import udi_interface
 import sys
 from nodes import gateway
+from nodes import sensor
 import rest
 import time
 
@@ -45,13 +46,13 @@ def generateGateways(polyglot):
         sensor_ = sensor_data[k]
         addr = sensor_[0]['gateways']
         if addr in gateway_sensors:
-            gateway_sensors[addr].append([k, sensor_info[k]['name']])
+            gateway_sensors[addr].append(k)
         else:
             gateway_sensors[addr] = []
-            gateway_sensors[addr].append([k, sensor_info[k]['name']])
+            gateway_sensors[addr].append(k)
 
     num = 0
-    start_num = 0
+    sensor_num = 0
     for k in gateway_data:
         gateway_ = gateway_data[k]
         id = gateway_['id']
@@ -62,11 +63,27 @@ def generateGateways(polyglot):
                 LOGGER.debug('No sensors for {}'.format(gateway_['name']))
 
             addr = f'controller_{num}'
-            node = gateway.Controller(polyglot, addr, addr, gateway_['name'], sensors, start_num, sample_num)
-            start_num += len(sensors)
+            node = gateway.Controller(polyglot, addr, addr, gateway_['name'], sample_num)
             polyglot.addNode(node)
             wait_for_node_done()
             num += 1
+
+            total_sensors = {}
+
+            for i in sensors:
+                sensor_addr = f'child_{sensor_num}'
+                sensor_ = sensor.SensorNode(polyglot, addr, sensor_addr, sensor_info[i]['name'])
+                total_sensors[i] = sensor_
+                polyglot.addNode(sensor_)
+                wait_for_node_done()
+
+                data = sensor_data[i][0]
+                sensor_.setDriver('GV0', int(data['temperature']), True, True)
+                sensor_.setDriver('GV1', int(data['humidity']), True, True)
+
+                sensor_num += 1
+
+            node.defineSensors(total_sensors)
         except Exception as e:
             LOGGER.error('Error when creating gateway {}'.format(e))
 
@@ -74,8 +91,6 @@ if __name__ == "__main__":
     try:
         polyglot = udi_interface.Interface([])
         polyglot.start()
-
-        LOGGER.debug(polyglot.getNodesFromDb())
 
         Parameters = Custom(polyglot, 'customparams')
 

@@ -20,14 +20,12 @@ class Controller(udi_interface.Node):
             {'driver': 'ST', 'value': 1, 'uom': 2}
             ]
 
-    def __init__(self, polyglot, parent, address, name, sensor_list, start_num, limit):
+    def __init__(self, polyglot, parent, address, name, limit):
         super(Controller, self).__init__(polyglot, parent, address, name)
 
         self.poly = polyglot
         self.count = 0
         self.n_queue = []
-        self.sensor_list = sensor_list
-        self.num = start_num
         self.limit = limit
         
         polyglot.subscribe(polyglot.START, self.start, address)
@@ -43,10 +41,10 @@ class Controller(udi_interface.Node):
             time.sleep(0.1)
         self.n_queue.pop()
 
-    def defineSensors(self):
+    def defineSensors(self, sensors):
 
-        self.sensors = {}
-
+        self.sensors = sensors
+        '''
         for i in self.sensor_list:
             try:
                 node = sensor.SensorNode(self.poly, self.address, f'child_{self.num}', i[1])
@@ -56,6 +54,7 @@ class Controller(udi_interface.Node):
                 self.num += 1
             except Exception as e:
                 LOGGER.error('Error when creating sensor: {}'.format(e))
+        '''
 
 
     def poll(self, polltype):
