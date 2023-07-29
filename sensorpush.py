@@ -14,7 +14,7 @@ import time
 LOGGER = udi_interface.LOGGER
 Custom = udi_interface.Custom
 
-sample_num = 0
+sample_num = 1
 n_queue = []
 
 def node_queue(data):
