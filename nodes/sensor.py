@@ -12,8 +12,8 @@ LOGGER = udi_interface.LOGGER
 Custom = udi_interface.Custom
 
 '''
-This is our Counter device node.  All it does is update the count at the
-poll interval.
+This is the sensor node class.
+It's just a node for storing data, no actions.
 '''
 class SensorNode(udi_interface.Node):
     id = 'child'

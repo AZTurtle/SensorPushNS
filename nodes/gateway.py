@@ -14,21 +14,30 @@ import rest
 LOGGER = udi_interface.LOGGER
 Custom = udi_interface.Custom
 
-class Controller(udi_interface.Node):
+'''
+The SensorPush Gateway node class.
+Represents a physical gateway that individual sensors connect to.
+
+Any sensors updated by this gateway are represented as children of this node.
+Individually gets the new samples for each sensor attached.
+
+TODO: Add checking for disconnected sensors and gateways
+'''
+
+class GatewayNode(udi_interface.Node):
     id = 'ctl'
     drivers = [
             {'driver': 'ST', 'value': 1, 'uom': 2}
             ]
 
     def __init__(self, polyglot, parent, address, name, limit):
-        super(Controller, self).__init__(polyglot, parent, address, name)
+        super(GatewayNode, self).__init__(polyglot, parent, address, name)
 
         self.poly = polyglot
         self.count = 0
         self.n_queue = []
         self.limit = limit
         
-        polyglot.subscribe(polyglot.START, self.start, address)
         polyglot.subscribe(polyglot.STOP, self.stop)
         polyglot.subscribe(polyglot.POLL, self.poll)
         polyglot.subscribe(polyglot.ADDNODEDONE, self.node_queue)
@@ -69,10 +78,6 @@ class Controller(udi_interface.Node):
                 data = sensor_data[k][0]
                 self.sensors[k].setDriver('GV0', int(data['temperature']), True, True)
                 self.sensors[k].setDriver('GV1', int(data['humidity']), True, True) 
-
-    def start(self):  
-        self.defineSensors()
-        LOGGER.debug(self.sensors)
 
     '''
     '''

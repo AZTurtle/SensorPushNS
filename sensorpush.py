@@ -29,6 +29,10 @@ def wait_for_node_done():
         time.sleep(0.1)
     n_queue.pop()
 
+'''
+
+'''
+
 def generateGateways(polyglot):
     gateway_data = rest.get('devices/gateways')
 
@@ -63,7 +67,7 @@ def generateGateways(polyglot):
                 LOGGER.debug('No sensors for {}'.format(gateway_['name']))
 
             addr = f'controller_{num}'
-            node = gateway.Controller(polyglot, addr, addr, gateway_['name'], sample_num)
+            node = gateway.GatewayNode(polyglot, addr, addr, gateway_['name'], sample_num)
             polyglot.addNode(node)
             wait_for_node_done()
             num += 1
@@ -92,6 +96,10 @@ if __name__ == "__main__":
 
         Parameters = Custom(polyglot, 'customparams')
 
+        '''
+        Handles authorization by using an e-mail and password obtained by custom parameters to get an auth key.
+        The auth key is then used to generate an auth token.
+        '''
         def parameterHandler(params):
             global sample_num
 
@@ -106,16 +114,10 @@ if __name__ == "__main__":
                 if rest.authorize(email, password):
                     polyglot.Notices.clear()
                     
-                    try:
-                        while not rest.auth_code:
-                            LOGGER.info("Couldn't obtain authorization... Waiting")
-                            time.sleep(10)
-
-                        rest.refreshAuthToken()
-                    except Exception as e:
-                        LOGGER.error("Failed to authorize")
-
-                    generateGateways(polyglot)
+                    if rest.refreshAuthToken():
+                        generateGateways(polyglot)
+                    else:
+                        LOGGER.info("Couldn't obtain authorization token...")
                 else:
                     polyglot.Notices['nodes'] = 'Invalid username and/or password'
             else:
