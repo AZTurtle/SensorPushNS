@@ -66,7 +66,9 @@ def post(url_, data):
         if 'type' in res and res['type'] == 'UNAUTHORIZED':
             LOGGER.debug('Unauthorized! Refreshing token.')
             refreshAuthToken()
-        else: return res
+        else: 
+            LOGGER
+            return res
 
         refresh += 1
     else:
