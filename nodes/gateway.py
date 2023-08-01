@@ -58,7 +58,6 @@ class GatewayNode(udi_interface.Node):
             try:
                 self.poly.addNode(i)
                 self.wait_for_node_done()
-                self.num += 1
             except Exception as e:
                 LOGGER.error('Error when creating sensor: {}'.format(e))
         
@@ -70,8 +69,6 @@ class GatewayNode(udi_interface.Node):
                 'sensors': list(self.sensors.keys()),
                 'limit': self.limit
             })
-
-            LOGGER.debug(self.sensors)
 
             sensor_data = res['sensors']
             for k in sensor_data:

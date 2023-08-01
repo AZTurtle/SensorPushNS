@@ -7,4 +7,4 @@ ND-child-ICON = Output
 ST-str-ST-NAME = Sensor Active
 ST-str-GV0-NAME = Temperature
 ST-str-GV1-NAME = Humidity
-CMD-SET_INCREMENT-NAME = Set Enable Increment
+ST-str-GV2-NAME = Battery Voltage

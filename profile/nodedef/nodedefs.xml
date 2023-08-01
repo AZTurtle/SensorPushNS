@@ -1,9 +1,8 @@
 <nodeDefs>
-
   <nodeDef id="ctl" nodeType="139" nls="ctl">
     <sts>
       <st id="ST" editor="bool" />
-	</sts>
+	  </sts>
   </nodeDef>
 
   <nodeDef id="child" nodeType="139" nls="str">
@@ -11,6 +10,7 @@
       <st id="ST" editor="bool" />
       <st id="GV0" editor="raw" />
       <st id="GV1" editor="raw" />
+      <st id="GV2" editor="raw" />
 	  </sts>
   </nodeDef>
 </nodeDefs>

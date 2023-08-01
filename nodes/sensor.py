@@ -20,11 +20,13 @@ class SensorNode(udi_interface.Node):
     drivers = [
             {'driver': 'ST', 'value': 1, 'uom': 2},
             {'driver': 'GV0', 'value': 0, 'uom': 56},
-            {'driver': 'GV1', 'value': 0, 'uom': 56}
+            {'driver': 'GV1', 'value': 0, 'uom': 56},
+            {'driver': 'GV2', 'value': 0, 'uom': 56}
             ]
 
     def __init__(self, polyglot, parent, address, name):
-        super(SensorNode, self).__init__(polyglot, parent, address, name)
+        super(SensorNode, self).__init__(polyglot, parent, address, name, sp_address)
 
         self.poly = polyglot
         self.count = 0
+        self.sp_address = sp_address

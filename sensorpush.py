@@ -76,18 +76,22 @@ def generateGateways(polyglot):
 
             for i in sensors:
                 sensor_addr = f'child_{sensor_num}'
-                sensor_ = sensor.SensorNode(polyglot, addr, sensor_addr, sensor_info[i]['name'])
+                sensor_ = sensor.SensorNode(polyglot, addr, sensor_addr, sensor_info[i]['name'], i)
                 total_sensors[i] = sensor_
 
                 data = sensor_data[i][0]
+                sensor_.setDriver('ST', data['active'], True, True)
                 sensor_.setDriver('GV0', int(data['temperature']), True, True)
                 sensor_.setDriver('GV1', int(data['humidity']), True, True)
+                sensor_.setDriver('GV2', int(data['batter_voltage']), True, True)
 
                 sensor_num += 1
 
             node.defineSensors(total_sensors)
         except Exception as e:
             LOGGER.error('Error when creating gateway {}'.format(e))
+
+    
 
 if __name__ == "__main__":
     try:
@@ -97,7 +101,7 @@ if __name__ == "__main__":
         Parameters = Custom(polyglot, 'customparams')
 
         '''
-        Handles authorization by using an e-mail and password obtained by custom parameters to get an auth key.
+        Handles authorization by using an e-mail and password obtained from custom parameters to get an auth key.
         The auth key is then used to generate an auth token.
         '''
         def parameterHandler(params):
@@ -110,18 +114,18 @@ if __name__ == "__main__":
             password = Parameters['Password']
             sample_num = int(Parameters['Number of Samples'])
 
-            if email and password:
-                if rest.authorize(email, password):
-                    polyglot.Notices.clear()
-                    
-                    if rest.refreshAuthToken():
-                        generateGateways(polyglot)
-                    else:
-                        LOGGER.info("Couldn't obtain authorization token...")
-                else:
-                    polyglot.Notices['nodes'] = 'Invalid username and/or password'
-            else:
+            if not (email and password):
                 polyglot.Notices['nodes'] = 'Please provide an E-Mail and Password'
+                return
+            
+            if not (rest.authorize(email, password)):
+                polyglot.Notices['nodes'] = 'Invalid username and/or password'
+                return
+
+            if rest.refreshAuthToken():
+                generateGateways(polyglot)
+            else:
+                LOGGER.info("Couldn't obtain authorization token...")
         
         
         polyglot.subscribe(polyglot.CUSTOMPARAMS, parameterHandler)
@@ -131,9 +135,8 @@ if __name__ == "__main__":
         polyglot.setCustomParamsDoc()
         polyglot.updateProfile()
 
-        # Create the controller node
-        polyglot.ready()
         # Just sit and wait for events
+        polyglot.ready()
         polyglot.runForever()
     except (KeyboardInterrupt, SystemExit):
         sys.exit(0)
