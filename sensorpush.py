@@ -33,6 +33,12 @@ def wait_for_node_done():
 
 '''
 
+def poll(pollType):
+    if 'longPoll' in pollType:
+        err = rest.refreshAuthToken()
+        if err:
+            LOGGER.error(f"Couldn't refresh auth token... {err}")
+
 def generateGateways(polyglot):
     gateway_data = rest.get('devices/gateways')
 
@@ -131,6 +137,7 @@ if __name__ == "__main__":
         
         polyglot.subscribe(polyglot.CUSTOMPARAMS, parameterHandler)
         polyglot.subscribe(polyglot.ADDNODEDONE, node_queue)
+        polyglot.subscribe(polyglot.POLL, poll)
 
 
         polyglot.setCustomParamsDoc()

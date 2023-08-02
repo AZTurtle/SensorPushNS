@@ -17,10 +17,11 @@ def authorize(email, password):
         'password': password
     }).json()
 
-    valid = 'authorization' in res
-    auth_code = res['authorization'] if valid else 0
-
-    return valid
+    if 'authorization' not in res:
+        return res['statusCode']
+    
+    auth_code = res['authorization']
+    return 0
     
 def refreshAuthToken():
     global auth_token
@@ -29,10 +30,11 @@ def refreshAuthToken():
         'authorization': auth_code
     }).json()
 
-    valid = 'accesstoken' in res
-    auth_token = res['accesstoken'] if valid else 0
-
-    return valid
+    if 'accesstoken' not in res:
+        return res['statusCode']
+    
+    auth_token = res['accesstoken']
+    return 0
     
 def get(url_):
     refresh = 0
@@ -44,12 +46,15 @@ def get(url_):
             'Authorization': auth_token
         }, json={}).json()
 
-        if 'type' in res and res['type'] == 'UNAUTHORIZED':
-            LOGGER.debug('Unauthorized! Refreshing token.')
-            refreshAuthToken()
-        else: return res
-
-        refresh += 1
+        if 'statusCode' in res:
+            code = res['statusCode']
+            if code == 400:
+                LOGGER.debug('Failed to GET! Refreshing token...')
+                refreshAuthToken()
+                refresh += 1
+                continue
+        
+        return res
     else:
         LOGGER.error(f'Failed to GET: {url}')
 
@@ -63,13 +68,14 @@ def post(url_, data):
             'Authorization': auth_token
         }, json=data).json()
 
-        if 'type' in res and res['type'] == 'UNAUTHORIZED':
-            LOGGER.debug('Unauthorized! Refreshing token.')
-            refreshAuthToken()
-        else: 
-            LOGGER
-            return res
-
-        refresh += 1
+        if 'statusCode' in res:
+            code = res['statusCode']
+            if code == 400:
+                LOGGER.debug('Failed to POST! Refreshing token...')
+                refreshAuthToken()
+                refresh += 1
+                continue
+        
+        return res
     else:
         LOGGER.error(f'Failed to POST: {url}')
