@@ -125,11 +125,13 @@ if __name__ == "__main__":
                 polyglot.Notices['nodes'] = 'Please provide an E-Mail and Password'
                 return
             
-            if not (rest.authorize(email, password)):
+            err = rest.authorize(email, password)
+            if err:
                 polyglot.Notices['nodes'] = 'Invalid username and/or password'
                 return
 
-            if rest.refreshAuthToken():
+            err = rest.refreshAuthToken()
+            if not err:
                 generateGateways(polyglot)
             else:
                 LOGGER.info("Couldn't obtain authorization token...")
