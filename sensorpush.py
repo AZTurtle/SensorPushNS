@@ -98,6 +98,16 @@ def generateGateways(polyglot):
         except Exception as e:
             LOGGER.error('Error when creating gateway {}'.format(e))
 
+def auth(key, data):
+    time.sleep(10)
+    LOGGER.debug(key)
+    if key == 'oauth':
+        time.sleep(10)
+        LOGGER.debug(data)
+
+def oauth(token):
+    time.sleep(10)
+    LOGGER.debug(token)
     
 
 if __name__ == "__main__":
@@ -135,11 +145,16 @@ if __name__ == "__main__":
                 generateGateways(polyglot)
             else:
                 LOGGER.info("Couldn't obtain authorization token...")
+
+            email = None
+            password = None
         
         
         polyglot.subscribe(polyglot.CUSTOMPARAMS, parameterHandler)
         polyglot.subscribe(polyglot.ADDNODEDONE, node_queue)
         polyglot.subscribe(polyglot.POLL, poll)
+        polyglot.subscribe(polyglot.CUSTOMNS, auth)
+        polyglot.subscribe(polyglot.OAUTH, oauth)
 
 
         polyglot.setCustomParamsDoc()

@@ -10,10 +10,6 @@
     "longPoll": "600",
 	"logLevel": "WARNING",
     "profile_version": "1.0.1",
-	"customParams": {
-		"nodes": 0,
-		"multiplier": 1
-	},
     "credits": [
     	{
     		"title": "Example Node Server for ISY/Polyglot",

@@ -52,9 +52,8 @@ def get(url_):
                 LOGGER.debug('Failed to GET! Refreshing token...')
                 refreshAuthToken()
                 refresh += 1
-                continue
-        
-        return res
+        else:
+            return res
     else:
         LOGGER.error(f'Failed to GET: {url}')
 
@@ -74,8 +73,7 @@ def post(url_, data):
                 LOGGER.debug('Failed to POST! Refreshing token...')
                 refreshAuthToken()
                 refresh += 1
-                continue
-        
-        return res
+        else:
+            return res
     else:
         LOGGER.error(f'Failed to POST: {url}')
