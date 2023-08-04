@@ -35,7 +35,7 @@ def wait_for_node_done():
 
 def poll(pollType):
     if 'longPoll' in pollType:
-        err = rest.refreshAuthToken()
+        err = rest.refreshToken()
         if err:
             LOGGER.error(f"Couldn't refresh auth token... {err}")
 
@@ -97,17 +97,6 @@ def generateGateways(polyglot):
             node.defineSensors(total_sensors)
         except Exception as e:
             LOGGER.error('Error when creating gateway {}'.format(e))
-
-def auth(key, data):
-    time.sleep(10)
-    LOGGER.debug(key)
-    if key == 'oauth':
-        time.sleep(10)
-        LOGGER.debug(data)
-
-def oauth(token):
-    time.sleep(10)
-    LOGGER.debug(token)
     
 
 if __name__ == "__main__":
@@ -127,10 +116,11 @@ if __name__ == "__main__":
             Parameters.load(params)
             polyglot.Notices.clear()
 
-            email = Parameters['E-Mail']
-            password = Parameters['Password']
+            #email = Parameters['E-Mail']
+            #password = Parameters['Password']
             sample_num = int(Parameters['Number of Samples'])
-
+            
+            '''
             if not (email and password):
                 polyglot.Notices['nodes'] = 'Please provide an E-Mail and Password'
                 return
@@ -140,7 +130,7 @@ if __name__ == "__main__":
                 polyglot.Notices['nodes'] = 'Invalid username and/or password'
                 return
 
-            err = rest.refreshAuthToken()
+            err = rest.refreshToken()
             if not err:
                 generateGateways(polyglot)
             else:
@@ -148,12 +138,16 @@ if __name__ == "__main__":
 
             email = None
             password = None
-        
+            '''
+            
+        def oauth(data):
+            json = data.json()
+            rest.access_token = json['access_token']
+            generateGateways(polyglot)
         
         polyglot.subscribe(polyglot.CUSTOMPARAMS, parameterHandler)
         polyglot.subscribe(polyglot.ADDNODEDONE, node_queue)
         polyglot.subscribe(polyglot.POLL, poll)
-        polyglot.subscribe(polyglot.CUSTOMNS, auth)
         polyglot.subscribe(polyglot.OAUTH, oauth)
 
 
