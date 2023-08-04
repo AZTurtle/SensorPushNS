@@ -143,8 +143,7 @@ if __name__ == "__main__":
         def oauth(data):
             time.sleep(10)
 
-            json = data.json()
-            rest.access_token = json['access_token']
+            rest.access_token = data['access_token']
             generateGateways(polyglot)
         
         polyglot.subscribe(polyglot.CUSTOMPARAMS, parameterHandler)
