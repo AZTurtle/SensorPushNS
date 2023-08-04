@@ -139,8 +139,10 @@ if __name__ == "__main__":
             email = None
             password = None
             '''
-            
+
         def oauth(data):
+            time.sleep(10)
+
             json = data.json()
             rest.access_token = json['access_token']
             generateGateways(polyglot)
