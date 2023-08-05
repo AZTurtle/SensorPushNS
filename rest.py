@@ -16,6 +16,8 @@ def refreshToken():
     refresh = 0
     code = 0
 
+    LOGGER.debug('--REFRESHING TOKEN--')
+
     while refresh < REFRESH_LIMIT:
         res = requests.post(SP_API_URL + 'oauth/token', headers={
             'accept': 'application/json',
@@ -24,6 +26,8 @@ def refreshToken():
 
         if 'statusCode' in res:
             code = res['statusCode']
+
+            refresh += 1
             continue
         
         LOGGER.debug(res)
