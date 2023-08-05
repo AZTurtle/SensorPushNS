@@ -3,7 +3,7 @@ import udi_interface
 
 SP_API_URL = 'https://api.sensorpush.com/api/v1/'
 access_token = ''
-refresh_data = {'grant_type': 'access_token'}
+refresh_data = {'grant_type': 'refresh_token'}
 
 REFRESH_LIMIT = 10
 
