@@ -36,6 +36,8 @@ def refreshToken():
         access_token = res['access_token']
         refresh_data['refresh_token'] = res['refresh_token']
 
+        return 0
+
     return code
     
 def get(url_):
