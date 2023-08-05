@@ -25,6 +25,7 @@ def refreshToken():
         }, json=refresh_data).json()
         
         LOGGER.debug(res)
+        LOGGER.debug(refresh_data)
 
         if 'statusCode' in res:
             code = res['statusCode']
