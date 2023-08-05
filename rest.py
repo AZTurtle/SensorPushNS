@@ -22,7 +22,7 @@ def refreshToken():
         res = requests.post(SP_API_URL + 'oauth/token', headers={
             'accept': 'application/json',
             'Authorization': access_token
-        }, json=refresh_data).json()
+        }, data=refresh_data).json()
         
         LOGGER.debug(res)
         LOGGER.debug(refresh_data)
