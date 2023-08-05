@@ -21,7 +21,7 @@ def refreshToken():
     while refresh < REFRESH_LIMIT:
         res = requests.post(SP_API_URL + 'oauth/token', headers={
             'accept': 'application/json',
-            'Content-Type': 'application/json',
+            'Authorization': access_token
         }, json=refresh_data).json()
         
         LOGGER.debug(res)
