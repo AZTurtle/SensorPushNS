@@ -70,8 +70,6 @@ class GatewayNode(udi_interface.Node):
                 'limit': self.limit
             })
 
-            LOGGER.debug(res)
-
             sensor_data = res['sensors']
             for k in sensor_data:
                 data = sensor_data[k][0]
