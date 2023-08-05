@@ -50,8 +50,7 @@ def get(url_):
         if 'statusCode' in res:
             code = res['statusCode']
             if code == 400:
-                LOGGER.debug('Failed to GET! Refreshing token...')
-                refreshToken()
+                LOGGER.debug('Failed to GET!')
                 refresh += 1
         else:
             return res
@@ -75,8 +74,7 @@ def post(url_, data):
         if 'statusCode' in res:
             code = res['statusCode']
             if code == 400:
-                LOGGER.debug('Failed to POST! Refreshing token...')
-                refreshToken()
+                LOGGER.debug('Failed to POST!')
                 refresh += 1
         else:
             return res
