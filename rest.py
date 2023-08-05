@@ -42,18 +42,21 @@ def get(url_):
     url = SP_API_URL + url_
 
     while refresh < REFRESH_LIMIT:
-        res = requests.post(url, headers={
-            'accept': 'application/json',
-            'Authorization': access_token
-        }, json={}).json()
+        try:
+            res = requests.post(url, headers={
+                'accept': 'application/json',
+                'Authorization': access_token
+            }, json={}).json()
 
-        if 'statusCode' in res:
-            code = res['statusCode']
-            if code == 400:
-                LOGGER.debug('Failed to GET!')
-                refresh += 1
-        else:
-            return res
+            if 'statusCode' in res:
+                code = res['statusCode']
+                if code == 400:
+                    LOGGER.debug('Failed to GET!')
+                    refresh += 1
+            else:
+                return res
+        except Exception as e:
+            LOGGER.error(f'Error when GETing {e}')
     else:
         LOGGER.error(f'Failed to GET: {url}')
 
@@ -62,23 +65,20 @@ def post(url_, data):
     url = SP_API_URL + url_
 
     while refresh < REFRESH_LIMIT:
-        res_ = requests.post(url, headers={
-            'accept': 'application/json',
-            'Authorization': access_token
-        }, json=data)
+        try:
+            res = requests.post(url, headers={
+                'accept': 'application/json',
+                'Authorization': access_token
+            }, json=data).json()
 
-        LOGGER.debug(res_)
-
-        res = res_.json()
-
-        LOGGER.debug(res)
-
-        if 'statusCode' in res:
-            code = res['statusCode']
-            if code == 400:
-                LOGGER.debug('Failed to POST!')
-                refresh += 1
-        else:
-            return res
+            if 'statusCode' in res:
+                code = res['statusCode']
+                if code == 400:
+                    LOGGER.debug('Failed to POST!')
+                    refresh += 1
+            else:
+                return res
+        except Exception as e:
+            LOGGER.error(f'Error when POSTing {e}')
     else:
         LOGGER.error(f'Failed to POST: {url}')

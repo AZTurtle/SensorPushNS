@@ -37,6 +37,7 @@ class GatewayNode(udi_interface.Node):
         self.count = 0
         self.n_queue = []
         self.limit = limit
+        self.created = False
         
         polyglot.subscribe(polyglot.STOP, self.stop)
         polyglot.subscribe(polyglot.POLL, self.poll)
@@ -61,20 +62,23 @@ class GatewayNode(udi_interface.Node):
             except Exception as e:
                 LOGGER.error('Error when creating sensor: {}'.format(e))
         
+        self.created = True
+        
 
 
     def poll(self, polltype):
         if 'shortPoll' in polltype:
-            res = rest.post('samples', {
-                'sensors': list(self.sensors.keys()),
-                'limit': self.limit
-            })
+            if self.created:
+                res = rest.post('samples', {
+                    'sensors': list(self.sensors.keys()),
+                    'limit': self.limit
+                })
 
-            sensor_data = res['sensors']
-            for k in sensor_data:
-                data = sensor_data[k][0]
-                self.sensors[k].setDriver('GV0', float(data['temperature']), True, True)
-                self.sensors[k].setDriver('GV1', float(data['humidity']), True, True) 
+                sensor_data = res['sensors']
+                for k in sensor_data:
+                    data = sensor_data[k][0]
+                    self.sensors[k].setDriver('GV0', float(data['temperature']), True, True)
+                    self.sensors[k].setDriver('GV1', float(data['humidity']), True, True)
 
     '''
     '''

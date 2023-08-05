@@ -134,6 +134,8 @@ if __name__ == "__main__":
         Handles authorization by using OAuth2 and sensorpush's login portal
         '''
         def oauth(data):
+            LOGGER.debug(data)
+
             rest.access_token = data['access_token']
             rest.refresh_data['refresh_token'] = data['refresh_token']
 
