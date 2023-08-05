@@ -37,7 +37,8 @@ def poll(pollType):
     if 'longPoll' in pollType:
         err = rest.refreshToken()
         if err:
-            LOGGER.error(f"Couldn't refresh auth token... {err}")
+            LOGGER.error(f'Failed to refresh token! Try authenticating again | {err}')
+        
 
 def generateGateways(polyglot):
     gateway_data = rest.get('devices/gateways')
@@ -97,6 +98,11 @@ def generateGateways(polyglot):
             node.defineSensors(total_sensors)
         except Exception as e:
             LOGGER.error('Error when creating gateway {}'.format(e))
+
+def customEvents(event, data):
+    if event == 'oauth':
+        rest.refresh_data['client_id'] = data['client_id']
+        rest.refresh_data['client_secret'] = data['client_secret']
     
 
 if __name__ == "__main__":
@@ -106,50 +112,29 @@ if __name__ == "__main__":
 
         Parameters = Custom(polyglot, 'customparams')
 
-        '''
-        Handles authorization by using an e-mail and password obtained from custom parameters to get an auth key.
-        The auth key is then used to generate an auth token.
-        '''
+        
         def parameterHandler(params):
             global sample_num
 
             Parameters.load(params)
             polyglot.Notices.clear()
 
-            #email = Parameters['E-Mail']
-            #password = Parameters['Password']
             sample_num = int(Parameters['Number of Samples'])
             
-            '''
-            if not (email and password):
-                polyglot.Notices['nodes'] = 'Please provide an E-Mail and Password'
-                return
-            
-            err = rest.authorize(email, password)
-            if err:
-                polyglot.Notices['nodes'] = 'Invalid username and/or password'
-                return
-
-            err = rest.refreshToken()
-            if not err:
-                generateGateways(polyglot)
-            else:
-                LOGGER.info("Couldn't obtain authorization token...")
-
-            email = None
-            password = None
-            '''
-
+        '''
+        Handles authorization by using OAuth2 and sensorpush's login portal
+        '''
         def oauth(data):
-            time.sleep(10)
-
             rest.access_token = data['access_token']
+            rest.refresh_data['refresh_token'] = data['refresh_token']
+
             generateGateways(polyglot)
         
         polyglot.subscribe(polyglot.CUSTOMPARAMS, parameterHandler)
         polyglot.subscribe(polyglot.ADDNODEDONE, node_queue)
         polyglot.subscribe(polyglot.POLL, poll)
         polyglot.subscribe(polyglot.OAUTH, oauth)
+        polyglot.subscribe(polyglot.CUSTOMNS, customEvents)
 
 
         polyglot.setCustomParamsDoc()
