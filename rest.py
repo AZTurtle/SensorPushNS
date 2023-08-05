@@ -63,10 +63,14 @@ def post(url_, data):
     url = SP_API_URL + url_
 
     while refresh < REFRESH_LIMIT:
-        res = requests.post(url, headers={
+        res_ = requests.post(url, headers={
             'accept': 'application/json',
             'Authorization': access_token
-        }, json=data).json()
+        }, json=data)
+
+        LOGGER.debug(res_)
+
+        res = res_.json()
 
         if 'statusCode' in res:
             code = res['statusCode']

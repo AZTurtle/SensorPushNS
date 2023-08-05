@@ -18,6 +18,10 @@ Custom = udi_interface.Custom
 sample_num = 1
 n_queue = []
 
+'''
+Gives a delay for every node added before allowing them to be used
+'''
+
 def node_queue(data):
     global n_queue
 
@@ -29,16 +33,21 @@ def wait_for_node_done():
         time.sleep(0.1)
     n_queue.pop()
 
-'''
 
+'''
+Used to refresh the access_token after an hour
 '''
 
 def poll(pollType):
     if 'longPoll' in pollType:
         err = rest.refreshToken()
         if err:
-            LOGGER.error(f'Failed to refresh token! Try authenticating again | {err}')
-        
+            LOGGER.error(f'Failed to refresh token! Try authenticating again | {err}')    
+
+
+'''
+Main function for generating nodes at beginning of server
+'''
 
 def generateGateways(polyglot):
     gateway_data = rest.get('devices/gateways')
