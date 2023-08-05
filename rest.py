@@ -71,6 +71,8 @@ def post(url_, data):
 
         res = res_.json()
 
+        LOGGER.debug(res)
+
         if 'statusCode' in res:
             code = res['statusCode']
             if code == 400:
