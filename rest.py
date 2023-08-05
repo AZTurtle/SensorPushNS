@@ -23,6 +23,8 @@ def refreshToken():
             'accept': 'application/json',
             'Content-Type': 'application/json',
         }, json=refresh_data).json()
+        
+        LOGGER.debug(res)
 
         if 'statusCode' in res:
             code = res['statusCode']
@@ -30,7 +32,6 @@ def refreshToken():
             refresh += 1
             continue
         
-        LOGGER.debug(res)
         access_token = res['access_token']
         refresh_data['refresh_token'] = res['refresh_token']
 
