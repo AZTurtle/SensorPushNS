@@ -1,9 +1,9 @@
 ND-ctl-NAME = SensorPush Controller
-ND-ctl-ICON = Output
+ND-ctl-ICON = EnergyMonitor
 ST-ctl-ST-NAME = NodeServer Online
 
 ND-child-NAME = SensorPush Sensor
-ND-child-ICON = Output
+ND-child-ICON = TempSensor
 ST-str-ST-NAME = Sensor Active
 ST-str-GV0-NAME = Temperature
 ST-str-GV1-NAME = Humidity
