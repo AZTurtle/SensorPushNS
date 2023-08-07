@@ -21,7 +21,7 @@ class SensorNode(udi_interface.Node):
             {'driver': 'ST', 'value': 1, 'uom': 2},
             {'driver': 'GV0', 'value': 0, 'uom': 17},
             {'driver': 'GV1', 'value': 0, 'uom': 51},
-            {'driver': 'GV2', 'value': 0, 'uom': 56}
+            {'driver': 'GV2', 'value': 0, 'uom': 72}
             ]
 
     def __init__(self, polyglot, parent, address, name, sp_address):
