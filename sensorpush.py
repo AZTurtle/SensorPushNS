@@ -118,10 +118,10 @@ def generateGateways(polyglot):
 
                 data = sensor_data[i][0]
                 info = sensor_info[i]
-                sensor_.setDriver('ST', int(info['active']), False, True)
-                sensor_.setDriver('GV0', float(data['temperature']), False, True)
-                sensor_.setDriver('GV1', float(data['humidity']), False, True)
-                sensor_.setDriver('GV2', float(info['battery_voltage']), False, True)
+                sensor_.setDriver('ST', int(info['active']), True, True)
+                sensor_.setDriver('GV0', float(data['temperature']), True, True)
+                sensor_.setDriver('GV1', float(data['humidity']), True, True)
+                sensor_.setDriver('GV2', float(info['battery_voltage']), True, True)
 
                 sensor_num += 1
 

@@ -75,8 +75,8 @@ class GatewayNode(udi_interface.Node):
                 sensor_data = res['sensors']
                 for k in sensor_data:
                     data = sensor_data[k][0]
-                    self.sensors[k].setDriver('GV0', float(data['temperature']), False, True)
-                    self.sensors[k].setDriver('GV1', float(data['humidity']), False, True)
+                    self.sensors[k].setDriver('GV0', float(data['temperature']), True, True)
+                    self.sensors[k].setDriver('GV1', float(data['humidity']), True, True)
 
     '''
     '''
