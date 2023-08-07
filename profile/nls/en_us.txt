@@ -1,5 +1,5 @@
 ND-ctl-NAME = SensorPush Controller
-ND-ctl-ICON = EnergyMonitor
+ND-ctl-ICON = Input
 ST-ctl-ST-NAME = NodeServer Online
 
 ND-child-NAME = SensorPush Sensor

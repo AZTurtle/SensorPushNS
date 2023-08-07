@@ -1,15 +1,15 @@
 {
-    "name": "Example-3",
-    "docs": "https://github.com/UniversalDevicesInc/udi-example3-poly/README.md",
+    "name": "SensorPushNS",
+    "docs": "https://github.com/AZTurtle/SensorPushNS/README.md",
     "type": "python3",
-    "executable": "count.py",
+    "executable": "sensorpush.py",
     "install": "install.sh",
-    "description": "Example node server that creates a user specified number of counter child nodes.",
+    "description": "Node server for integration with SensorPush devices",
     "notice": "",
     "shortPoll": "60",
-    "longPoll": "600",
+    "longPoll": "3600",
 	"logLevel": "WARNING",
-    "profile_version": "1.0.1",
+    "profile_version": "0.0.1",
     "credits": [
     	{
     		"title": "Example Node Server for ISY/Polyglot",
@@ -19,12 +19,5 @@
     		"source": "https://github.com/UniversalDevicesInc/udi-example3-poly",
 			"license": "https://github.com/UniversalDevicesInc/udi-example3-poly/LICENSE"
 		}
-	],
-	"store" : {
-		"developer": "bpaauwe@bobsplace.com",
-		"price": 0.00,
-		"recurring": 0,
-		"recurring_interval": "month",
-		"recurring_period": 0
-	}
+	]
 }
