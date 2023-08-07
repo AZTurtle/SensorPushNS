@@ -1,10 +1,10 @@
-#!/usr/bin/env python3
 """
-Polyglot v3 node server Example 3
-Copyright (C) 2021 Robert Paauwe
+SensorPush Node Server
+Copyright (C) 2023 James Bennett
 
 MIT License
 """
+
 import udi_interface
 import sys
 

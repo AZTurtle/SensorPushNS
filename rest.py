@@ -1,3 +1,10 @@
+"""
+SensorPush Node Server
+Copyright (C) 2023 James Bennett
+
+MIT License
+"""
+
 import requests
 import udi_interface
 
