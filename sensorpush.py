@@ -22,6 +22,8 @@ Custom = udi_interface.Custom
 sample_num = 1
 n_queue = []
 
+update_sensors = {}
+
 '''
 Gives a delay for every node added before allowing them to be used
 '''
@@ -46,7 +48,19 @@ def poll(pollType):
     if 'longPoll' in pollType:
         err = rest.refreshToken()
         if err:
-            LOGGER.error(f'Failed to refresh token! Try authenticating again | {err}')    
+            LOGGER.error(f'Failed to refresh token! Try authenticating again | {err}')   
+
+        sensor_info = rest.get('devices/sensors')
+        
+        for id in update_sensors:
+            if id in sensor_info:
+                sensor_ = update_sensors[id]
+                info = sensor_info[id]
+
+                sensor_.setDriver('ST', info['active'], True, True)
+                sensor_.setDriver('GV2', float(info['battery_voltage']), True, True)
+            else:
+                sensor_.setDriver('ST', False, True, True)
 
 
 '''
@@ -101,13 +115,15 @@ def generateGateways(polyglot):
 
                 data = sensor_data[i][0]
                 info = sensor_info[i]
-                sensor_.setDriver('ST', float(info['active']), True, True)
+                sensor_.setDriver('ST', info['active'], True, True)
                 sensor_.setDriver('GV0', float(data['temperature']), True, True)
                 sensor_.setDriver('GV1', float(data['humidity']), True, True)
                 sensor_.setDriver('GV2', float(info['battery_voltage']), True, True)
+                sensor_.setDriver('GV3', )
 
                 sensor_num += 1
 
+            update_sensors.update(total_sensors)
             node.defineSensors(total_sensors)
         except Exception as e:
             LOGGER.error('Error when creating gateway {}'.format(e))

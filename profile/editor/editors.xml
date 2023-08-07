@@ -6,4 +6,7 @@
 	<editor id="raw">
 		<range uom="56" min="-10000" max="10000" prec="2" /> 
 	</editor>
+	<editor id="temp">
+		<range uom="17" min="-10000" max="10000" prec="2" /> 
+	</editor>
 </editors>

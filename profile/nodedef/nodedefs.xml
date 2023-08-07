@@ -8,7 +8,7 @@
   <nodeDef id="child" nodeType="139" nls="str">
     <sts>
       <st id="ST" editor="bool" />
-      <st id="GV0" editor="raw" />
+      <st id="GV0" editor="temp" />
       <st id="GV1" editor="raw" />
       <st id="GV2" editor="raw" />
 	  </sts>
