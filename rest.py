@@ -65,7 +65,7 @@ def get(url_):
         except Exception as e:
             LOGGER.error(f'Error when GETing {e}')
     else:
-        LOGGER.error(f'Failed to GET: {url}')
+        LOGGER.error(f'Timeout GET: {url}')
 
 def post(url_, data):
     refresh = 0
@@ -88,4 +88,4 @@ def post(url_, data):
         except Exception as e:
             LOGGER.error(f'Error when POSTing {e}')
     else:
-        LOGGER.error(f'Failed to POST: {url}')
+        LOGGER.error(f'Timeout POST: {url}')
