@@ -52,6 +52,8 @@ class GatewayNode(udi_interface.Node):
 
     def defineSensors(self, sensors):
 
+        self.sensors = sensors
+
         for i in self.sensors.values():
             try:
                 self.poly.addNode(i)
