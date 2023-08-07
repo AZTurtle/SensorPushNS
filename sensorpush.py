@@ -144,17 +144,12 @@ if __name__ == "__main__":
             rest.refresh_data['refresh_token'] = data['refresh_token']
 
             generateGateways(polyglot)
-
-        def start():
-            time.sleep(5)
-            polyglot.Notices['oauth'] = 'Please Authenticate'
         
         polyglot.subscribe(polyglot.CUSTOMPARAMS, parameterHandler)
         polyglot.subscribe(polyglot.ADDNODEDONE, node_queue)
         polyglot.subscribe(polyglot.POLL, poll)
         polyglot.subscribe(polyglot.OAUTH, oauth)
         polyglot.subscribe(polyglot.CUSTOMNS, customEvents)
-        polyglot.subscribe(polyglot.START, start)
 
 
         polyglot.setCustomParamsDoc()
