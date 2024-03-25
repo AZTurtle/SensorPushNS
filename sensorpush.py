@@ -50,7 +50,12 @@ def poll(pollType):
         if err:
             LOGGER.error(f'Failed to refresh token! Try authenticating again | {err}')   
 
+        gateway_data = rest.get('devices/gateways')
         sensor_info = rest.get('devices/sensors')
+
+        nodes = polyglot.getNodes()
+
+        LOGGER.debug(nodes)
         
         for id in update_sensors:
             if id in sensor_info:
