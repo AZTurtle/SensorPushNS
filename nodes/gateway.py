@@ -38,6 +38,7 @@ class GatewayNode(udi_interface.Node):
         self.n_queue = []
         self.limit = limit
         self.created = False
+        self.sensors = {}
         
         polyglot.subscribe(polyglot.STOP, self.stop)
         polyglot.subscribe(polyglot.ADDNODEDONE, self.node_queue)
@@ -52,14 +53,17 @@ class GatewayNode(udi_interface.Node):
 
     def defineSensors(self, sensors):
 
-        self.sensors = sensors
+        if self.sensors == {}:
+            self.sensors = sensors
 
-        for i in self.sensors.values():
-            try:
-                self.poly.addNode(i)
-                self.wait_for_node_done()
-            except Exception as e:
-                LOGGER.error('Error when creating sensor: {}'.format(e))
+            for i in self.sensors.values():
+                try:
+                    self.poly.addNode(i)
+                    self.wait_for_node_done()
+                except Exception as e:
+                    LOGGER.error('Error when creating sensor: {}'.format(e))
+        else:
+            LOGGER.info(sensors)
         
         self.poly.subscribe(self.poly.POLL, self.poll)
 
