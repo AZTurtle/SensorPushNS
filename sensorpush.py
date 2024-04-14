@@ -56,6 +56,8 @@ def poll(pollType):
         nodes = polyglot.getNodes()
 
         LOGGER.debug(nodes)
+        LOGGER.debug(sensor_info)
+        LOGGER.debug(gateway_data)
         
         for id in update_sensors:
             if id in sensor_info:

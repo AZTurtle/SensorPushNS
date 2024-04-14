@@ -63,7 +63,9 @@ class GatewayNode(udi_interface.Node):
                 except Exception as e:
                     LOGGER.error('Error when creating sensor: {}'.format(e))
         else:
-            LOGGER.info(sensors)
+            diff = list(set(self.sensors.keys()) - set(sensors.keys()))
+            if diff:
+                pass
         
         self.poly.subscribe(self.poly.POLL, self.poll)
 
