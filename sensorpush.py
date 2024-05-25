@@ -1,189 +1,66 @@
-"""
-SensorPush Node Server
-Copyright (C) 2023 James Bennett
+#!/usr/bin/env python
 
-MIT License
-"""
-
-'''
-TODO - Add more comments
-'''
-
-import udi_interface
+from nodes import Controller
 import sys
-from nodes import gateway
-from nodes import sensor
-import rest
-import time
+from rest import SPService
+from udi_interface import LOGGER, Custom, Interface
 
-LOGGER = udi_interface.LOGGER
-Custom = udi_interface.Custom
+polyglot = None
+oauthService = None
+controller = None
 
-sample_num = 1
-n_queue = []
+def configDoneHandler():
+    # We use this to discover devices, or ask to authenticate if user has not already done so
+    polyglot.Notices.clear()
 
-update_sensors = {}
-
-'''
-Gives a delay for every node added before allowing them to be used
-'''
-
-def node_queue(data):
-    global n_queue
-
-    n_queue.append(data['address'])
-
-def wait_for_node_done():
-    global n_queue
-    while len(n_queue) == 0:
-        time.sleep(0.1)
-    n_queue.pop()
-
-
-'''
-Used to refresh the access_token after an hour
-'''
-
-def poll(pollType):
-    if 'longPoll' in pollType:
-        err = rest.refreshToken()
-        if err:
-            LOGGER.error(f'Failed to refresh token! Try authenticating again | {err}')   
-
-        gateway_data = rest.get('devices/gateways')
-        sensor_info = rest.get('devices/sensors')
-
-        nodes = polyglot.getNodes()
-
-        LOGGER.debug(nodes)
-        LOGGER.debug(sensor_info)
-        LOGGER.debug(gateway_data)
-        
-        for id in update_sensors:
-            if id in sensor_info:
-                sensor_ = update_sensors[id]
-                info = sensor_info[id]
-
-                sensor_.setDriver('ST', int(info['active']), True, True)
-                sensor_.setDriver('GV2', float(info['battery_voltage']), True, True)
-            else:
-                sensor_.setDriver('ST', 0, True, True)
-
-
-'''
-Main function for generating nodes at beginning of server
-'''
-
-def generateGateways(polyglot):
-    gateway_data = rest.get('devices/gateways')
-
-    sensor_info = rest.get('devices/sensors')
-
-    sample_data = rest.post('samples', {
-        'limit': sample_num
-    })
-
-    sensor_data = sample_data['sensors']
-
-    gateway_sensors = {}
-
-    for k in sensor_data:
-        sensor_ = sensor_data[k]
-        addr = sensor_[0]['gateways']
-        if addr in gateway_sensors:
-            gateway_sensors[addr].append(k)
-        else:
-            gateway_sensors[addr] = []
-            gateway_sensors[addr].append(k)
-
-    num = 0
-    sensor_num = 0
-    for k in gateway_data:
-        gateway_ = gateway_data[k]
-        id = gateway_['id']
-        try:
-            sensors = gateway_sensors[id]
-
-            if not sensors:
-                LOGGER.debug('No sensors for {}'.format(gateway_['name']))
-
-            addr = f'controller_{num}'
-            node = gateway.GatewayNode(polyglot, addr, addr, gateway_['name'], sample_num)
-            polyglot.addNode(node)
-            wait_for_node_done()
-
-            node.setDriver('ST', 1, False, True)
-
-            num += 1
-
-            total_sensors = {}
-
-            for i in sensors:
-                sensor_addr = f'child_{sensor_num}'
-                sensor_ = sensor.SensorNode(polyglot, addr, sensor_addr, sensor_info[i]['name'], i)
-                total_sensors[i] = sensor_
-
-                data = sensor_data[i][0]
-                info = sensor_info[i]
-                sensor_.setDriver('ST', int(info['active']), True, True)
-                sensor_.setDriver('GV0', float(data['temperature']), True, True)
-                sensor_.setDriver('GV1', float(data['humidity']), True, True)
-                sensor_.setDriver('GV2', float(info['battery_voltage']), True, True)
-
-                sensor_num += 1
-
-            update_sensors.update(total_sensors)
-            node.defineSensors(total_sensors)
-        except Exception as e:
-            LOGGER.error('Error when creating gateway {}'.format(e))
-
-def customEvents(event, data):
-    if event == 'oauth':
-        rest.refresh_data['client_id'] = data['client_id']
-        rest.refresh_data['client_secret'] = data['client_secret']
+    # First check if user has authenticated
+    try:
+        oauthService.getAccessToken()
+    except ValueError as err:
+        LOGGER.warning('Access token is not yet available. Please authenticate.')
+        polyglot.Notices['auth'] = 'Please initiate authentication'
+        return
     
+    controller.update()
+
+def oauthHandler(token):
+    # When user just authorized, pass this to your service, which will pass it to the OAuth handler
+    oauthService.oauthHandler(token)
+
+    # Then proceed with device discovery
+    configDoneHandler()
+
+def stopHandler():
+    # Set nodes offline
+    polyglot.stop()
 
 if __name__ == "__main__":
-    try:
-        polyglot = udi_interface.Interface([])
-        polyglot.start()
+	try:
+		# Create an instance of the Polyglot interface. We need to
+		# pass in array of node classes (or an empty array).
 
-        Parameters = Custom(polyglot, 'customparams')
+		polyglot = Interface([])
+		polyglot.start({ 'version': '1.0.0', 'requestId': True }) 
+          
+		polyglot.setCustomParamsDoc()
 
+		# Update the profile files
+		polyglot.updateProfile()
+          
+		oauthService = SPService(polyglot)
+
+		# Start the node server (I.E. create the controller node)
+		controller = Controller(polyglot, "controller", "controller", "Sensorpush", oauthService)
         
-        def parameterHandler(params):
-            global sample_num
+		polyglot.subscribe(polyglot.STOP, stopHandler)
+		polyglot.subscribe(polyglot.CUSTOMNS, oauthService.customNsHandler)
+		polyglot.subscribe(polyglot.CUSTOMPARAMS, oauthService.customParamsHandler)
+		polyglot.subscribe(polyglot.OAUTH, oauthHandler)
+		polyglot.subscribe(polyglot.CONFIGDONE, configDoneHandler)
+		
+		polyglot.ready()
 
-            Parameters.load(params)
-            polyglot.Notices.clear()
-
-            sample_num = int(Parameters['Number of Samples'])
-            
-        '''
-        Handles authorization by using OAuth2 and sensorpush's login portal
-        '''
-        def oauth(data):
-            LOGGER.debug(data)
-
-            rest.access_token = data['access_token']
-            rest.refresh_data['refresh_token'] = data['refresh_token']
-
-            generateGateways(polyglot)
-        
-        polyglot.subscribe(polyglot.CUSTOMPARAMS, parameterHandler)
-        polyglot.subscribe(polyglot.ADDNODEDONE, node_queue)
-        polyglot.subscribe(polyglot.POLL, poll)
-        polyglot.subscribe(polyglot.OAUTH, oauth)
-        polyglot.subscribe(polyglot.CUSTOMNS, customEvents)
-
-
-        polyglot.setCustomParamsDoc()
-        polyglot.updateProfile()
-
-        # Just sit and wait for events
-        polyglot.ready()
-        polyglot.runForever()
-    except (KeyboardInterrupt, SystemExit):
-        sys.exit(0)
-        
-
+		# Enter main event loop waiting for messages from Polyglot
+		polyglot.runForever()
+	except (KeyboardInterrupt, SystemExit):
+		sys.exit(0)

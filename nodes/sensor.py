@@ -15,7 +15,7 @@ Custom = udi_interface.Custom
 This is the sensor node class.
 It's just a node for storing data, no actions.
 '''
-class SensorNode(udi_interface.Node):
+class Sensor(udi_interface.Node):
     id = 'child'
     drivers = [
             {'driver': 'ST', 'value': 1, 'uom': 2},
@@ -24,9 +24,7 @@ class SensorNode(udi_interface.Node):
             {'driver': 'GV2', 'value': 0, 'uom': 72}
             ]
 
-    def __init__(self, polyglot, parent, address, name, sp_address):
-        super(SensorNode, self).__init__(polyglot, parent, address, name)
+    def __init__(self, polyglot, parent, address, name):
+        super(Sensor, self).__init__(polyglot, parent, address, name)
 
         self.poly = polyglot
-        self.count = 0
-        self.sp_address = sp_address
